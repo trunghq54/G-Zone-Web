@@ -1,7 +1,31 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import api from '@/lib/api';
+import { setToken } from '@/lib/token';
 
 const Login: React.FC = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await api.post('/auth/login', { email, password });
+      const { accessToken, refreshToken } = response.data;
+      setToken(accessToken, refreshToken);
+      navigate('/dashboard');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'An error occurred during login.');
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="bg-background-dark min-h-screen flex flex-col relative overflow-hidden text-white">
       {/* Navbar Minimal */}
@@ -34,12 +58,20 @@ const Login: React.FC = () => {
                 <h1 className="text-3xl font-bold text-white mb-2 tracking-tight">RIDER ACCESS</h1>
                 <p className="text-text-muted text-sm">Enter your credentials to hit the road.</p>
               </div>
-              <form className="flex flex-col gap-5">
+              <form className="flex flex-col gap-5" onSubmit={handleLogin}>
                 <div className="space-y-2 group">
                   <label className="text-xs font-bold text-gray-400 uppercase tracking-wider group-focus-within:text-primary transition-colors" htmlFor="email">Email Address</label>
                   <div className="relative">
                      <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500 material-symbols-outlined text-[20px]">mail</span>
-                    <input className="block w-full rounded-lg border border-[#333] bg-[#0d0d0d] pl-10 pr-3 py-3 text-white placeholder-gray-600 focus:border-primary focus:ring-1 focus:ring-primary focus:bg-[#151515] transition-all sm:text-sm" id="email" placeholder="rider@example.com" type="email" />
+                    <input 
+                      className="block w-full rounded-lg border border-[#333] bg-[#0d0d0d] pl-10 pr-3 py-3 text-white placeholder-gray-600 focus:border-primary focus:ring-1 focus:ring-primary focus:bg-[#151515] transition-all sm:text-sm" 
+                      id="email" 
+                      placeholder="rider@example.com" 
+                      type="email" 
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
                   </div>
                 </div>
                 <div className="space-y-2 group">
@@ -49,12 +81,43 @@ const Login: React.FC = () => {
                   </div>
                   <div className="relative">
                     <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500 material-symbols-outlined text-[20px]">lock</span>
-                    <input className="block w-full rounded-lg border border-[#333] bg-[#0d0d0d] pl-10 pr-10 py-3 text-white placeholder-gray-600 focus:border-primary focus:ring-1 focus:ring-primary focus:bg-[#151515] transition-all sm:text-sm" id="password" placeholder="••••••••" type="password" />
+                    <input 
+                      className="block w-full rounded-lg border border-[#333] bg-[#0d0d0d] pl-10 pr-10 py-3 text-white placeholder-gray-600 focus:border-primary focus:ring-1 focus:ring-primary focus:bg-[#151515] transition-all sm:text-sm" 
+                      id="password" 
+                      placeholder="••••••••" 
+                      type="password" 
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
                   </div>
                 </div>
-                <Link to="/dashboard" className="mt-4 w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-white font-bold py-3.5 px-4 rounded-lg uppercase tracking-widest shadow-[0_0_15px_rgba(230,0,0,0.3)] transition-all">
-                  <span>Ignition</span> <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
-                </Link>
+
+                {error && (
+                  <div className="bg-red-900/50 border border-red-500/50 text-red-300 text-xs rounded-lg p-3 text-center">
+                    {error}
+                  </div>
+                )}
+
+                <button 
+                  type="submit"
+                  disabled={isLoading}
+                  className="mt-4 w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-white font-bold py-3.5 px-4 rounded-lg uppercase tracking-widest shadow-[0_0_15px_rgba(230,0,0,0.3)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isLoading ? (
+                    <>
+                      <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      <span>Authenticating...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Ignition</span> <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
+                    </>
+                  )}
+                </button>
               </form>
               <div className="relative flex py-2 items-center"><div className="flex-grow border-t border-[#333]"></div><span className="flex-shrink-0 mx-4 text-gray-600 text-xs uppercase font-medium">Or continue with</span><div className="flex-grow border-t border-[#333]"></div></div>
               <div className="grid grid-cols-2 gap-4">
