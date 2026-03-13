@@ -1,5 +1,6 @@
 import axios from "axios";
-import { getToken, setToken, removeToken } from "./token";
+import { getToken } from "./token";
+import { getUser, setUser, removeUser } from "./user";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -31,26 +32,41 @@ api.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = error.config;
+
+    // Check for network errors or other issues where response is not available
+    if (!error.response) {
+      return Promise.reject(error);
+    }
+
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       const token = getToken();
       if (token) {
         try {
-          const response = await axios.post(`${API_BASE_URL}/auth/refresh-token`, {
-            refreshToken: token.refreshToken,
-          });
+          const response = await axios.post(
+            `${API_BASE_URL}/auth/refresh-token`,
+            {
+              refreshToken: token.refreshToken,
+            }
+          );
+          // Assuming the refresh token response gives new tokens
           const { accessToken, refreshToken } = response.data;
-          setToken(accessToken, refreshToken);
+          const user = getUser();
+          if (user) {
+            const newUser = { ...user, "access-token": accessToken, "refresh-token": refreshToken };
+            setUser(newUser);
+          }
+
           api.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
           originalRequest.headers["Authorization"] = `Bearer ${accessToken}`;
           return api(originalRequest);
         } catch (refreshError) {
-          removeToken();
+          removeUser();
           window.location.href = "/login";
           return Promise.reject(refreshError);
         }
       } else {
-        removeToken();
+        removeUser();
         window.location.href = "/login";
       }
     }
@@ -59,3 +75,5 @@ api.interceptors.response.use(
 );
 
 export default api;
+
+

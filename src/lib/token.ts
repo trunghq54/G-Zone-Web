@@ -1,23 +1,17 @@
-const GZONE_ACCESS_TOKEN = "GZONE_ACCESS_TOKEN";
-const GZONE_REFRESH_TOKEN = "GZONE_REFRESH_TOKEN";
+import { getUser } from "./user";
 
 export const getToken = (): { accessToken: string; refreshToken: string } | null => {
-  const accessToken = localStorage.getItem(GZONE_ACCESS_TOKEN);
-  const refreshToken = localStorage.getItem(GZONE_REFRESH_TOKEN);
+  const user = getUser();
+  if (!user) {
+    return null;
+  }
+
+  const accessToken = user["access-token"];
+  const refreshToken = user["refresh-token"];
 
   if (!accessToken || !refreshToken) {
     return null;
   }
 
   return { accessToken, refreshToken };
-};
-
-export const setToken = (accessToken: string, refreshToken: string) => {
-  localStorage.setItem(GZONE_ACCESS_TOKEN, accessToken);
-  localStorage.setItem(GZONE_REFRESH_TOKEN, refreshToken);
-};
-
-export const removeToken = () => {
-  localStorage.removeItem(GZONE_ACCESS_TOKEN);
-  localStorage.removeItem(GZONE_REFRESH_TOKEN);
 };
