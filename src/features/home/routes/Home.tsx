@@ -6,8 +6,10 @@ import jacket from '@/assets/jacket.png';
 import gloves from '@/assets/gloves.png';
 import { Product, getProducts } from '@/features/admin/api/product-api';
 import { addToCart } from '@/lib/cart';
+import { useToast } from '@/providers/ToastProvider';
 
 const Home: React.FC = () => {
+  const { showToast } = useToast();
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
 
   useEffect(() => {
@@ -33,6 +35,7 @@ const Home: React.FC = () => {
       categoryId: product.categoryId,
       warrantyPeriodMonths: product.warrantyPeriodMonths,
     });
+    showToast(`"${product.productName}" added to cart!`);
   };
 
   return (

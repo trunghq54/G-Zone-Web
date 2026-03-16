@@ -37,11 +37,13 @@ import AdminDashboard from "@/features/admin/routes/AdminDashboard";
 import AdminCategories from "@/features/admin/routes/AdminCategories";
 import AdminProducts from "@/features/admin/routes/AdminProducts";
 import AdminOrders from "./src/features/admin/routes/AdminOrders";
+import { ToastProvider } from "@/providers/ToastProvider";
 
 const App: React.FC = () => {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <ToastProvider>
         <Routes>
           {/* Client Routes */}
           <Route element={<MainLayout />}>
@@ -77,6 +79,7 @@ const App: React.FC = () => {
           {/* Auth Route */}
           <Route path="/login" element={<Login />} />
         </Routes>
+        </ToastProvider>
       </AuthProvider>
     </BrowserRouter>
   );
