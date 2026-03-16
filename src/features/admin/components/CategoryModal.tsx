@@ -64,7 +64,7 @@ const CategoryModal: React.FC<CategoryModalProps> = ({
     } else if (name === "displayOrder") {
       setFormData((prev) => ({ ...prev, [name]: parseInt(value) || 0 }));
     } else {
-      setFormData((prev) => ({ ...prev, [name]: value === "" ? undefined : value }));
+      setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
@@ -72,11 +72,19 @@ const CategoryModal: React.FC<CategoryModalProps> = ({
     e.preventDefault();
     setLoading(true);
     try {
-      await onSave(formData, initialData?.categoryId);
+      const payload = {
+        ...formData,
+        parentCategoryId: formData.parentCategoryId || undefined,
+      };
+      await onSave(payload, initialData?.categoryId);
       onClose();
-    } catch (error) {
-      console.error(error);
-      alert("Something went wrong saving the category.");
+    } catch (error: any) {
+      console.error(error.response?.data || error);
+      alert(
+        error.response?.data?.message ||
+          error.response?.data?.title ||
+          "Something went wrong saving the category."
+      );
     } finally {
       setLoading(false);
     }
