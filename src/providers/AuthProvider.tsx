@@ -74,17 +74,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setLoading(true);
     try {
       const freshUser = await getAccountMe();
-      setUser(freshUser); // Update user in localStorage
-      setUserState(freshUser);
+      const currentUser = getUser(); // Get existing to preserve tokens
+      
+      const mergedUser = {
+        ...currentUser, // Keep accessToken and other existing fields
+        ...freshUser,   // Update with fresh profile data
+      };
+      
+      setUser(mergedUser); // Update user in localStorage
+      setUserState(mergedUser);
       await fetchAndSetAvatar(freshUser);
     } catch (error) {
       console.error("Failed to refresh user, logging out.", error);
-      // If we can't get the user profile, they are likely unauthenticated
       logout();
     } finally {
       setLoading(false);
     }
-  }, [fetchAndSetAvatar]);
+  }, [fetchAndSetAvatar, logout]);
 
   useEffect(() => {
     const storedUser = getUser();
@@ -102,20 +108,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         const userData = await loginApi(email, password);
         setUser(userData); // Store the initial user data (like tokens)
         setUserState(userData); // Set the user state
+        
+        // Navigate based on role
+        const role = userData?.role || userData?.Role;
+        if (role && role.toLowerCase() === "admin") {
+          navigate("/admin");
+        } else {
+          navigate("/");
+        }
       } catch (error) {
         throw error;
       }
     },
-    []
+    [navigate]
   );
 
   const isAuthenticated = user !== null;
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/");
-    }
-  }, [isAuthenticated, navigate]);
+  // REMOVED auto navigate("/")
+  // useEffect(() => {
+  //   if (isAuthenticated) {
+  //     navigate("/");
+  //   }
+  // }, [isAuthenticated, navigate]);
 
   const contextValue = useMemo(
     () => ({

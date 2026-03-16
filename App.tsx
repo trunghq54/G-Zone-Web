@@ -13,6 +13,8 @@ import ProductDetail from "@/features/products/routes/ProductDetail";
 import Cart from "@/features/cart/routes/Cart";
 import Accessories from "@/features/products/routes/Accessories";
 import { AuthProvider } from "@/providers/AuthProvider";
+import ProtectedRoute from "@/components/Routes/ProtectedRoute";
+import AdminRoute from "@/components/Routes/AdminRoute";
 
 const MainLayout: React.FC = () => {
   return (
@@ -28,23 +30,46 @@ const MainLayout: React.FC = () => {
 
 import ProfilePage from "@/features/accounts/routes/ProfilePage";
 
+import AdminLayout from "@/components/Layout/Admin/AdminLayout";
+import AdminDashboard from "@/features/admin/routes/AdminDashboard";
+import AdminCategories from "@/features/admin/routes/AdminCategories";
+
 const App: React.FC = () => {
   return (
     <BrowserRouter>
       <AuthProvider>
         <Routes>
+          {/* Client Routes */}
           <Route element={<MainLayout />}>
+            {/* Public Routes */}
             <Route path="/" element={<Home />} />
-            <Route path="/missions" element={<MissionLog />} />
-            <Route path="/support" element={<Support />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/garage" element={<Garage />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/product" element={<ProductDetail />} />
-            <Route path="/cart" element={<Cart />} />
             <Route path="/shop" element={<Accessories />} />
-            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/product" element={<ProductDetail />} />
+            <Route path="/support" element={<Support />} />
+
+            {/* Protected Routes (Logged in users only) */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/missions" element={<MissionLog />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/garage" element={<Garage />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/profile" element={<ProfilePage />} />
+              {/* Keep this dashboard for customers */}
+              <Route path="/dashboard" element={<Dashboard />} />
+            </Route>
+
           </Route>
+
+          {/* Admin Routes */}
+          <Route element={<AdminRoute />}>
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="categories" element={<AdminCategories />} />
+              {/* Add more admin routes here later (products, users, etc.) */}
+            </Route>
+          </Route>
+
+          {/* Auth Route */}
           <Route path="/login" element={<Login />} />
         </Routes>
       </AuthProvider>

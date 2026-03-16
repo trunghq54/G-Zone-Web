@@ -6,7 +6,7 @@ export const loginApi = async (email, password) => {
     { email, password },
     {
       headers: {
-        "Content-Type": "application/json-patch+json",
+        "Content-Type": "application/json",
       },
     }
   );
@@ -17,7 +17,7 @@ export const loginApi = async (email, password) => {
 export const registerApi = async (userName, email, password) => {
   const response = await api.post(
     "/auths/register",
-    { "user-name": userName, email, password },
+    { userName, email, password },
     {
       headers: {
         "Content-Type": "application/json",

@@ -6,8 +6,9 @@ export const getToken = (): { accessToken: string; refreshToken: string } | null
     return null;
   }
 
-  const accessToken = user["access-token"];
-  const refreshToken = user["refresh-token"];
+  // Handle both camelCase from BE directly and hyphenated format
+  const accessToken = user.accessToken || user["access-token"];
+  const refreshToken = user.refreshToken || user["refresh-token"];
 
   if (!accessToken || !refreshToken) {
     return null;
