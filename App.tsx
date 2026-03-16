@@ -27,6 +27,7 @@ const MainLayout: React.FC = () => {
 };
 
 import ProfilePage from "@/features/accounts/routes/ProfilePage";
+import AddressPage from "@/features/accounts/routes/AddressPage";
 
 const App: React.FC = () => {
   return (
@@ -44,6 +45,7 @@ const App: React.FC = () => {
             <Route path="/cart" element={<Cart />} />
             <Route path="/shop" element={<Accessories />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/profile/addresses" element={<AddressPage />} />
           </Route>
           <Route path="/login" element={<Login />} />
         </Routes>

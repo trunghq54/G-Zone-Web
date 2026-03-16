@@ -74,9 +74,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setLoading(true);
     try {
       const freshUser = await getAccountMe();
-      setUser(freshUser); // Update user in localStorage
-      setUserState(freshUser);
-      await fetchAndSetAvatar(freshUser);
+      const currentUser = getUser() || {}; // Get existing user data (with tokens)
+      const newUser = {
+        ...currentUser,
+        ...freshUser,
+        "account-id": freshUser.id || currentUser.id,
+      }; // Explicitly preserve account-id
+      setUser(newUser); // Save merged data back to localStorage
+      setUserState(newUser); // Update React state
+      await fetchAndSetAvatar(newUser);
     } catch (error) {
       console.error("Failed to refresh user, logging out.", error);
       // If we can't get the user profile, they are likely unauthenticated
@@ -84,7 +90,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     } finally {
       setLoading(false);
     }
-  }, [fetchAndSetAvatar]);
+  }, [fetchAndSetAvatar, logout]);
 
   useEffect(() => {
     const storedUser = getUser();
@@ -102,7 +108,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         const loginResponseData = await loginApi(email, password);
         // First, store the user data containing the token. This is critical
         // so that subsequent API calls (like in refreshUser) are authenticated.
-        setUser(loginResponseData);
+        const userData = {
+          ...loginResponseData,
+          "account-id": loginResponseData.id,
+        };
+        setUser(userData);
 
         // Now, refresh the user state to get the full, canonical user profile
         // from the server, which will also trigger the avatar fetch.
