@@ -99,23 +99,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const login = useCallback(
     async (email, password) => {
       try {
-        const userData = await loginApi(email, password);
-        setUser(userData); // Store the initial user data (like tokens)
-        setUserState(userData); // Set the user state
+        const loginResponseData = await loginApi(email, password);
+        // First, store the user data containing the token. This is critical
+        // so that subsequent API calls (like in refreshUser) are authenticated.
+        setUser(loginResponseData);
+
+        // Now, refresh the user state to get the full, canonical user profile
+        // from the server, which will also trigger the avatar fetch.
+        await refreshUser();
+
+        // Navigate only after the full user profile is loaded.
+        navigate("/");
       } catch (error) {
+        // If login fails, ensure we clean up any partial state.
+        removeUser();
+        setUserState(null);
         throw error;
       }
     },
-    []
+    [navigate, refreshUser]
   );
 
   const isAuthenticated = user !== null;
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/");
-    }
-  }, [isAuthenticated, navigate]);
 
   const contextValue = useMemo(
     () => ({
