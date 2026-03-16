@@ -1,3 +1,4 @@
+
 import React from "react";
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import Header from "@/components/Layout/Header";
@@ -33,6 +34,7 @@ import ProfilePage from "@/features/accounts/routes/ProfilePage";
 import AdminLayout from "@/components/Layout/Admin/AdminLayout";
 import AdminDashboard from "@/features/admin/routes/AdminDashboard";
 import AdminCategories from "@/features/admin/routes/AdminCategories";
+import AdminProducts from "@/features/admin/routes/AdminProducts";
 
 const App: React.FC = () => {
   return (
@@ -57,7 +59,6 @@ const App: React.FC = () => {
               {/* Keep this dashboard for customers */}
               <Route path="/dashboard" element={<Dashboard />} />
             </Route>
-
           </Route>
 
           {/* Admin Routes */}
@@ -65,7 +66,7 @@ const App: React.FC = () => {
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
               <Route path="categories" element={<AdminCategories />} />
-              {/* Add more admin routes here later (products, users, etc.) */}
+              <Route path="products" element={<AdminProducts />} />
             </Route>
           </Route>
 
@@ -78,3 +79,4 @@ const App: React.FC = () => {
 };
 
 export default App;
+
