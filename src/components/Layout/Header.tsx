@@ -1,14 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/providers/AuthProvider';
 import ProfileDropdown from '../UI/ProfileDropdown';
 import { getCart, getCartCount } from '@/lib/cart';
 
+const primaryLinks = [
+  { to: '/shop', label: 'Shop All' },
+  { to: '/garage', label: 'Garage' },
+  { to: '/missions', label: 'Missions' },
+  { to: '/support', label: 'Support' },
+];
+
 const Header: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const isCheckout = location.pathname === '/checkout';
   const [cartCount, setCartCount] = useState(0);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const syncCartCount = () => {
@@ -19,6 +28,17 @@ const Header: React.FC = () => {
     window.addEventListener('cart:updated', syncCartCount);
     return () => window.removeEventListener('cart:updated', syncCartCount);
   }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    setSearchTerm(params.get('search') || '');
+  }, [location.search]);
+
+  const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const query = searchTerm.trim();
+    navigate(query ? `/shop?search=${encodeURIComponent(query)}` : '/shop');
+  };
 
   if (isCheckout) {
     return (
@@ -38,49 +58,117 @@ const Header: React.FC = () => {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-surface-border bg-[#120505]/95 backdrop-blur">
-      <div className="flex h-16 items-center px-4 md:px-8 max-w-[1440px] mx-auto justify-between">
-        <div className="flex items-center gap-8">
-          <Link to="/" className="flex items-center gap-2 text-white transition-opacity hover:opacity-80">
-            <div className="size-6 text-primary">
-              <span className="material-symbols-outlined text-3xl">sports_motorsports</span>
+    <header className="sticky top-0 z-50 w-full border-b border-surface-border bg-[#120505]/95 backdrop-blur supports-[backdrop-filter]:bg-[#120505]/80">
+      <div className="hidden border-b border-white/5 bg-black/30 md:block">
+        <div className="mx-auto flex max-w-[1440px] items-center justify-between px-4 py-2 text-[11px] font-bold uppercase tracking-[0.22em] text-white/55 md:px-8">
+          <div className="flex items-center gap-5">
+            <span>COD available</span>
+            <span>Verified riding gear</span>
+            <span>Support 7 days</span>
+          </div>
+          <div className="flex items-center gap-5">
+            <Link to="/support" className="transition-colors hover:text-white">Help Center</Link>
+            <Link to={isAuthenticated ? '/profile' : '/login'} className="transition-colors hover:text-white">
+              {isAuthenticated ? 'My Account' : 'Sign In'}
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      <div className="mx-auto max-w-[1440px] px-4 md:px-8">
+        <div className="flex min-h-16 items-center gap-4 py-3">
+          <div className="flex min-w-0 items-center gap-6">
+            <Link to="/" className="flex items-center gap-3 text-white transition-opacity hover:opacity-85">
+              <div className="flex size-10 items-center justify-center rounded-full border border-primary/30 bg-primary/10 text-primary">
+                <span className="material-symbols-outlined text-[22px]">sports_motorsports</span>
+              </div>
+              <div className="min-w-0">
+                <span className="block text-xl font-black uppercase italic leading-none tracking-tight">MotoGear</span>
+                <span className="hidden text-[10px] font-bold uppercase tracking-[0.24em] text-white/45 sm:block">Ride ready storefront</span>
+              </div>
+            </Link>
+          </div>
+
+          <form onSubmit={handleSearchSubmit} className="hidden flex-1 lg:flex">
+            <div className="relative w-full max-w-2xl">
+              <span className="material-symbols-outlined pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-white/35">search</span>
+              <input
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
+                className="h-12 w-full rounded-full border border-white/10 bg-[#1a1111] pl-12 pr-36 text-sm text-white placeholder:text-white/30 focus:border-primary focus:outline-none"
+                placeholder="Search helmets, jackets, gloves..."
+                type="text"
+              />
+              <button className="absolute right-1.5 top-1.5 rounded-full bg-primary px-5 py-3 text-xs font-black uppercase tracking-[0.2em] text-white transition-colors hover:bg-red-600">
+                Search
+              </button>
             </div>
-            <span className="text-xl font-bold tracking-tighter uppercase italic">MotoGear</span>
-          </Link>
-          <nav className="hidden md:flex items-center gap-6">
-            <Link to="/shop" className="text-sm font-medium text-white/70 hover:text-primary transition-colors uppercase tracking-wide">Shop</Link>
-            <Link to="/garage" className="text-sm font-medium text-white/70 hover:text-primary transition-colors uppercase tracking-wide">Garage</Link>
-            <Link to="/missions" className="text-sm font-medium text-white/70 hover:text-primary transition-colors uppercase tracking-wide">Missions</Link>
-            <Link to="/support" className="text-sm font-medium text-white/70 hover:text-primary transition-colors uppercase tracking-wide">Support</Link>
-          </nav>
+          </form>
+
+          <div className="ml-auto flex items-center gap-2 sm:gap-3">
+            <Link
+              to="/shop"
+              className="hidden rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-xs font-bold uppercase tracking-[0.2em] text-white/70 transition-colors hover:border-primary/30 hover:text-white md:inline-flex"
+            >
+              Shop Now
+            </Link>
+            <Link to="/cart" className="relative flex size-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-white transition-colors hover:border-primary/40 hover:text-primary">
+              <span className="material-symbols-outlined">shopping_cart</span>
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-white">
+                  {cartCount > 99 ? '99+' : cartCount}
+                </span>
+              )}
+            </Link>
+            {isAuthenticated ? (
+              <ProfileDropdown />
+            ) : (
+              <Link to="/login" className="flex size-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-white transition-colors hover:border-primary/40 hover:text-primary">
+                <span className="material-symbols-outlined text-[20px]">person</span>
+              </Link>
+            )}
+            {!isAuthenticated && (
+              <Link to="/login" className="hidden rounded-full bg-primary px-4 py-2 text-xs font-black uppercase tracking-[0.2em] text-white transition-colors hover:bg-red-600 sm:inline-flex">
+                Sign In
+              </Link>
+            )}
+          </div>
         </div>
 
-        <div className="flex items-center gap-4">
-          <div className="hidden lg:flex relative group">
-            <input className="bg-surface-dark border border-surface-border rounded-lg py-1.5 px-4 text-sm text-white focus:outline-none focus:border-primary w-64 transition-all" placeholder="Search parts..." type="text" />
-            <span className="material-symbols-outlined absolute right-3 top-1.5 text-white/40 text-[20px]">search</span>
-          </div>
-          <Link to="/cart" className="text-white hover:text-primary transition-colors relative">
-            <span className="material-symbols-outlined">shopping_cart</span>
-            {cartCount > 0 && (
-              <span className="absolute -top-2 -right-2 min-w-5 h-5 px-1 rounded-full bg-primary text-[10px] font-bold text-white flex items-center justify-center">
-                {cartCount > 99 ? '99+' : cartCount}
-              </span>
-            )}
-          </Link>
-          {isAuthenticated ? (
-            <ProfileDropdown />
-          ) : (
-            <Link to="/login" className="size-9 rounded-full bg-surface-dark border border-surface-border flex items-center justify-center text-white hover:border-primary transition-colors">
-              <span className="material-symbols-outlined text-[20px]">person</span>
-            </Link>
-          )}
-          {!isAuthenticated && (
-            <Link to="/login" className="md:hidden text-white">
-              <span className="material-symbols-outlined">login</span>
-            </Link>
-          )}
+        <div className="pb-3 lg:hidden">
+          <form onSubmit={handleSearchSubmit} className="relative">
+            <span className="material-symbols-outlined pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-white/35">search</span>
+            <input
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              className="h-11 w-full rounded-full border border-white/10 bg-[#1a1111] pl-12 pr-4 text-sm text-white placeholder:text-white/30 focus:border-primary focus:outline-none"
+              placeholder="Search riding gear"
+              type="text"
+            />
+          </form>
         </div>
+
+        <nav className="flex gap-2 overflow-x-auto border-t border-white/5 py-3 text-xs font-bold uppercase tracking-[0.18em] text-white/60 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {primaryLinks.map((link) => (
+            <NavLink
+              key={link.to}
+              to={link.to}
+              className={({ isActive }) =>
+                `whitespace-nowrap rounded-full px-4 py-2 transition-colors ${
+                  isActive ? 'bg-primary text-white' : 'bg-white/[0.03] hover:bg-white/[0.08] hover:text-white'
+                }`
+              }
+            >
+              {link.label}
+            </NavLink>
+          ))}
+          <Link to="/profile" className="whitespace-nowrap rounded-full bg-white/[0.03] px-4 py-2 transition-colors hover:bg-white/[0.08] hover:text-white">
+            Account
+          </Link>
+          <Link to="/profile/orders" className="whitespace-nowrap rounded-full bg-white/[0.03] px-4 py-2 transition-colors hover:bg-white/[0.08] hover:text-white">
+            Orders
+          </Link>
+        </nav>
       </div>
     </header>
   );

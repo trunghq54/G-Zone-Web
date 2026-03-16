@@ -12,6 +12,30 @@ const Home: React.FC = () => {
   const { showToast } = useToast();
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
 
+  const categoryCards = [
+    {
+      title: 'Helmets',
+      subtitle: 'Protection',
+      description: 'DOT & SNELL certified options for daily road and touring use.',
+      image: helmet,
+      span: 'md:col-span-2 md:row-span-2',
+    },
+    {
+      title: 'Jackets',
+      subtitle: 'Weather Ready',
+      description: 'Layered outerwear for urban riding and longer routes.',
+      image: jacket,
+      span: '',
+    },
+    {
+      title: 'Gloves',
+      subtitle: 'Grip Control',
+      description: 'Short cuff and gauntlet gloves with impact protection.',
+      image: gloves,
+      span: '',
+    },
+  ];
+
   useEffect(() => {
     const loadProducts = async () => {
       try {
@@ -40,130 +64,157 @@ const Home: React.FC = () => {
 
   return (
     <div className="w-full">
-      {/* Hero Section */}
-      <div className="relative w-full bg-background-dark">
-        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-2xl bg-black h-[500px] md:h-[600px]">
+      <div className="relative overflow-hidden border-b border-white/5 bg-background-dark">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(230,0,0,0.14),_transparent_26%)]" />
+        <div className="mx-auto grid max-w-7xl gap-6 px-4 py-8 sm:px-6 lg:grid-cols-[minmax(0,1.3fr),420px] lg:px-8 lg:py-10">
+          <section className="relative overflow-hidden rounded-[30px] border border-white/10 bg-black min-h-[540px]">
             <div className="absolute inset-0 z-0">
-              <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent z-10"></div>
-              <img 
-                alt="High performance red sport motorcycle" 
-                className="h-full w-full object-cover object-center opacity-80" 
-                src={highPerformanceRedSportMotorcycle} 
+              <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/62 to-black/18 z-10" />
+              <img
+                alt="High performance red sport motorcycle"
+                className="h-full w-full object-cover object-center opacity-80"
+                src={highPerformanceRedSportMotorcycle}
               />
             </div>
-            <div className="relative z-20 flex h-full flex-col justify-end px-6 py-12 md:w-2/3 lg:w-1/2 lg:px-12">
-              <div className="mb-6 flex items-center gap-2">
-                <span className="flex h-2 w-2 rounded-full bg-primary"></span>
-                <span className="text-xs font-bold uppercase tracking-widest text-primary">New Arrival</span>
+            <div className="relative z-20 flex h-full flex-col justify-between px-6 py-7 md:px-10 md:py-10">
+              <div className="flex flex-wrap items-center gap-3 text-[11px] font-bold uppercase tracking-[0.26em] text-white/60">
+                <span className="rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-primary">Storefront refresh</span>
+                <span>Built for riders</span>
               </div>
-              <h1 className="mb-4 text-5xl font-black uppercase leading-none tracking-tighter text-white sm:text-6xl lg:text-7xl">
-                Ride Ready<br/>Everyday
-              </h1>
-              <p className="mb-8 max-w-md text-lg text-gray-300">
-                Find certified gear, compare real prices, and checkout with COD in minutes.
-              </p>
-              <div className="mb-5 flex flex-wrap gap-4">
-                <Link to="/shop" className="inline-flex h-12 items-center justify-center rounded-lg bg-primary px-8 text-base font-bold tracking-wide text-white transition-all hover:bg-primary-hover hover:shadow-[0_0_20px_rgba(230,0,0,0.4)]">
-                  SHOP NOW
-                </Link>
-                <Link to="/profile/orders" className="inline-flex h-12 items-center justify-center rounded-lg border border-white/20 bg-white/5 px-8 text-base font-bold tracking-wide text-white backdrop-blur-sm transition-all hover:bg-white/10">
-                  TRACK ORDER
-                </Link>
-              </div>
-              <div className="grid w-full max-w-xl grid-cols-1 gap-3 sm:grid-cols-3">
-                <div className="rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-xs font-bold uppercase tracking-wider text-white/80">COD available</div>
-                <div className="rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-xs font-bold uppercase tracking-wider text-white/80">Fast support</div>
-                <div className="rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-xs font-bold uppercase tracking-wider text-white/80">Verified gear</div>
+              <div className="max-w-2xl">
+                <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.28em] text-primary">MotoGear shop</p>
+                <h1 className="mb-5 text-5xl font-black uppercase leading-none tracking-tight text-white sm:text-6xl xl:text-7xl">
+                  Shop Layout That
+                  <br />
+                  Feels Like A Real Store
+                </h1>
+                <p className="mb-8 max-w-xl text-base leading-7 text-white/72 sm:text-lg">
+                  The page now follows the same direction used by stronger shops: a clear hero, visible navigation, search-first browsing, and structured product rails instead of scattered blocks.
+                </p>
+                <div className="mb-6 flex flex-wrap gap-4">
+                  <Link to="/shop" className="inline-flex h-12 items-center justify-center rounded-full bg-primary px-8 text-sm font-black uppercase tracking-[0.22em] text-white transition-colors hover:bg-red-600">
+                    Shop Now
+                  </Link>
+                  <Link to="/profile" className="inline-flex h-12 items-center justify-center rounded-full border border-white/15 bg-white/[0.03] px-8 text-sm font-black uppercase tracking-[0.22em] text-white transition-colors hover:bg-white/[0.08]">
+                    My Account
+                  </Link>
+                </div>
+                <div className="grid max-w-2xl grid-cols-1 gap-3 sm:grid-cols-3">
+                  <div className="rounded-2xl border border-white/10 bg-black/35 px-4 py-3 text-xs font-bold uppercase tracking-[0.18em] text-white/75">COD available</div>
+                  <div className="rounded-2xl border border-white/10 bg-black/35 px-4 py-3 text-xs font-bold uppercase tracking-[0.18em] text-white/75">Fast support</div>
+                  <div className="rounded-2xl border border-white/10 bg-black/35 px-4 py-3 text-xs font-bold uppercase tracking-[0.18em] text-white/75">Verified gear</div>
+                </div>
               </div>
             </div>
-          </div>
+          </section>
+
+          <aside className="grid gap-4">
+            <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,_rgba(255,255,255,0.03),_rgba(255,255,255,0.01))] p-6">
+              <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.24em] text-primary">Why this feels better</p>
+              <h2 className="text-2xl font-black uppercase tracking-tight text-white">Storefront Basics, Done Right</h2>
+              <div className="mt-5 space-y-3 text-sm leading-6 text-white/68">
+                <p>Clear global nav at the top, just like RevZilla and FC-Moto.</p>
+                <p>Search and category filters are now obvious instead of buried.</p>
+                <p>Cards use one visual structure, so product media no longer feels random.</p>
+              </div>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
+              {[
+                { icon: 'storefront', label: 'Search-first browsing' },
+                { icon: 'inventory_2', label: 'Consistent product blocks' },
+                { icon: 'person', label: 'Cleaner account shell' },
+              ].map((item) => (
+                <div key={item.label} className="rounded-[24px] border border-white/10 bg-black/30 p-5">
+                  <span className="material-symbols-outlined text-2xl text-primary">{item.icon}</span>
+                  <p className="mt-4 text-xs font-bold uppercase tracking-[0.2em] text-white/45">Updated</p>
+                  <p className="mt-1 text-lg font-bold text-white">{item.label}</p>
+                </div>
+              ))}
+            </div>
+          </aside>
         </div>
       </div>
 
-      {/* Categories */}
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="mb-8 flex items-end justify-between">
-          <h2 className="text-3xl font-bold uppercase tracking-tight text-white">Featured Categories</h2>
-          <Link to="/shop" className="hidden text-sm font-bold text-primary hover:text-white sm:block">VIEW ALL CATEGORIES -&gt;</Link>
+        <div className="mb-8 flex items-end justify-between gap-4">
+          <div>
+            <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.24em] text-primary">Shop by category</p>
+            <h2 className="text-3xl font-black uppercase tracking-tight text-white">Structured Entry Points</h2>
+          </div>
+          <Link to="/shop" className="hidden text-sm font-black uppercase tracking-[0.2em] text-primary transition-colors hover:text-white sm:block">View all categories</Link>
         </div>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:grid-rows-2 h-auto md:h-[600px]">
-          {/* Primary Feature: Helmets */}
-          <Link to="/shop" className="group relative col-span-1 md:col-span-2 md:row-span-2 overflow-hidden rounded-xl bg-surface-dark border border-surface-border">
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent z-10"></div>
-            <img alt="Helmet" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" src={helmet} />
-            <div className="absolute bottom-0 left-0 z-20 p-8">
-              <span className="mb-2 block text-xs font-bold uppercase tracking-widest text-primary">Protection</span>
-              <h3 className="text-4xl font-black uppercase text-white group-hover:text-primary transition-colors">Helmets</h3>
-              <p className="mt-2 text-gray-400">DOT & SNELL certified for maximum safety.</p>
-            </div>
-          </Link>
-          {/* Secondary Feature: Jackets */}
-          <Link to="/shop" className="group relative col-span-1 overflow-hidden rounded-xl bg-surface-dark border border-surface-border">
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10"></div>
-            <img alt="Jacket" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" src={jacket} />
-            <div className="absolute bottom-0 left-0 z-20 p-6">
-              <h3 className="text-2xl font-black uppercase text-white group-hover:text-primary transition-colors">Jackets</h3>
-            </div>
-          </Link>
-          {/* Tertiary Feature: Gloves */}
-          <Link to="/shop" className="group relative col-span-1 overflow-hidden rounded-xl bg-surface-dark border border-surface-border">
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10"></div>
-            <img alt="Gloves" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" src={gloves} />
-            <div className="absolute bottom-0 left-0 z-20 p-6">
-              <h3 className="text-2xl font-black uppercase text-white group-hover:text-primary transition-colors">Gloves</h3>
-            </div>
-          </Link>
+        <div className="grid h-auto grid-cols-1 gap-4 md:h-[620px] md:grid-cols-3 md:grid-rows-2">
+          {categoryCards.map((card) => (
+            <Link
+              key={card.title}
+              to="/shop"
+              className={`group relative overflow-hidden rounded-[26px] border border-surface-border bg-surface-dark ${card.span}`}
+            >
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent z-10" />
+              <img alt={card.title} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" src={card.image} />
+              <div className="absolute inset-x-0 bottom-0 z-20 p-6 md:p-8">
+                <span className="mb-2 block text-[11px] font-bold uppercase tracking-[0.24em] text-primary">{card.subtitle}</span>
+                <h3 className="text-3xl font-black uppercase text-white transition-colors group-hover:text-primary md:text-4xl">{card.title}</h3>
+                <p className="mt-2 max-w-sm text-sm leading-6 text-white/68">{card.description}</p>
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
 
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="mb-6 flex items-end justify-between border-b border-surface-border pb-4">
           <div>
-            <h2 className="text-3xl font-bold uppercase tracking-tight text-white">Hot Picks</h2>
-            <p className="mt-1 text-sm text-text-muted">Bestsellers selected from your latest admin inventory.</p>
+            <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.24em] text-primary">Featured rail</p>
+            <h2 className="text-3xl font-black uppercase tracking-tight text-white">Best Sellers</h2>
+            <p className="mt-1 text-sm text-text-muted">Consistent media blocks, brand labels, and clear CTA hierarchy.</p>
           </div>
-          <Link to="/shop" className="text-sm font-bold text-primary hover:text-white">VIEW ALL -&gt;</Link>
+          <Link to="/shop" className="text-sm font-black uppercase tracking-[0.2em] text-primary transition-colors hover:text-white">View all</Link>
         </div>
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {featuredProducts.map((product) => (
-            <div key={product.productId} className="rounded-xl border border-surface-border bg-surface-dark p-5">
-              <p className="mb-2 text-xs font-bold uppercase tracking-wider text-text-muted">{product.brand || 'G-Zone'}</p>
-              <Link to={`/product/${product.productId}`} className="mb-3 block text-lg font-bold text-white hover:text-primary transition-colors">
-                {product.productName}
+            <div key={product.productId} className="overflow-hidden rounded-[24px] border border-surface-border bg-surface-dark">
+              <Link to={`/product/${product.productId}`} className="flex h-48 items-center justify-center border-b border-white/5 bg-[radial-gradient(circle_at_top,_rgba(230,0,0,0.14),_transparent_40%),linear-gradient(180deg,_#191919,_#101010)] p-5">
+                <span className="material-symbols-outlined text-[64px] text-white/18">inventory_2</span>
               </Link>
-              <p className="mb-4 text-sm text-text-muted line-clamp-2">{product.description || 'Premium riding gear for daily and track usage.'}</p>
-              <div className="flex items-center justify-between">
-                <span className="text-xl font-black text-primary">${product.basePrice.toFixed(2)}</span>
-                <button
-                  onClick={() => quickAdd(product)}
-                  className="rounded-md bg-primary px-3 py-2 text-xs font-bold uppercase tracking-wider text-white hover:bg-red-600 transition-colors"
-                >
-                  Add
-                </button>
+              <div className="p-5">
+                <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.22em] text-text-muted">{product.brand || 'G-Zone'}</p>
+                <Link to={`/product/${product.productId}`} className="mb-3 block text-lg font-bold text-white hover:text-primary transition-colors">
+                {product.productName}
+                </Link>
+                <p className="mb-4 text-sm text-text-muted line-clamp-2">{product.description || 'Premium riding gear for daily and track usage.'}</p>
+                <div className="flex items-center justify-between">
+                  <span className="text-xl font-black text-primary">${product.basePrice.toFixed(2)}</span>
+                  <button
+                    onClick={() => quickAdd(product)}
+                    className="rounded-full bg-primary px-4 py-2.5 text-xs font-black uppercase tracking-[0.18em] text-white transition-colors hover:bg-red-600"
+                  >
+                    Add
+                  </button>
+                </div>
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 pb-2 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 pb-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          <div className="rounded-lg border border-surface-border bg-surface-dark p-4">
-            <p className="text-xs font-bold uppercase tracking-wider text-primary">Step 1</p>
-            <p className="mt-1 text-white font-bold">Browse Products</p>
-            <p className="mt-1 text-sm text-text-muted">Filter by category and compare prices quickly.</p>
+          <div className="rounded-[22px] border border-surface-border bg-surface-dark p-5">
+            <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-primary">Step 1</p>
+            <p className="mt-2 text-lg font-bold text-white">Browse Products</p>
+            <p className="mt-2 text-sm leading-6 text-text-muted">Search first, then narrow by category. This mirrors the flow used by stronger commerce sites.</p>
           </div>
-          <div className="rounded-lg border border-surface-border bg-surface-dark p-4">
-            <p className="text-xs font-bold uppercase tracking-wider text-primary">Step 2</p>
-            <p className="mt-1 text-white font-bold">Add To Cart</p>
-            <p className="mt-1 text-sm text-text-muted">Adjust quantity directly from your cart anytime.</p>
+          <div className="rounded-[22px] border border-surface-border bg-surface-dark p-5">
+            <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-primary">Step 2</p>
+            <p className="mt-2 text-lg font-bold text-white">Review Clear Cards</p>
+            <p className="mt-2 text-sm leading-6 text-text-muted">Every product block keeps the same hierarchy: media, brand, title, price, then action.</p>
           </div>
-          <div className="rounded-lg border border-surface-border bg-surface-dark p-4">
-            <p className="text-xs font-bold uppercase tracking-wider text-primary">Step 3</p>
-            <p className="mt-1 text-white font-bold">Checkout COD</p>
-            <p className="mt-1 text-sm text-text-muted">Place order with cash-on-delivery in one simple form.</p>
+          <div className="rounded-[22px] border border-surface-border bg-surface-dark p-5">
+            <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-primary">Step 3</p>
+            <p className="mt-2 text-lg font-bold text-white">Checkout And Track</p>
+            <p className="mt-2 text-sm leading-6 text-text-muted">Account and order tracking now sit in a cleaner account shell, closer to real storefront UX.</p>
           </div>
         </div>
       </div>

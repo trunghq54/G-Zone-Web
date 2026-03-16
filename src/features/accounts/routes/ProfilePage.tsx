@@ -5,6 +5,8 @@ import {
 } from "@/features/accounts/api/account-api";
 import { useAuth } from "@/providers/AuthProvider";
 import { getMyOrders, Order } from "@/features/orders/api/order-api";
+import { Link } from "react-router-dom";
+import { useToast } from "@/providers/ToastProvider";
 
 // ---- Order helpers --------------------------------------------------------
 
@@ -22,6 +24,7 @@ const statusClass = (status: string) => {
 
 const ProfileTab: React.FC = () => {
   const { user: profile, avatarUrl, refreshUser } = useAuth();
+  const { showToast } = useToast();
   const [formData, setFormData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -52,7 +55,7 @@ const ProfileTab: React.FC = () => {
     }
     try {
       await updateAccount(payload);
-      alert("Profile updated successfully!");
+      showToast("Profile updated successfully.");
       await refreshUser();
       setIsEditing(false);
     } catch (err) {
@@ -69,7 +72,7 @@ const ProfileTab: React.FC = () => {
       setError(null);
       try {
         await updateAvatar(file);
-        alert("Avatar updated successfully!");
+        showToast("Avatar updated successfully.");
         await refreshUser();
       } catch {
         setError("Failed to update avatar.");
@@ -185,18 +188,14 @@ const ProfileTab: React.FC = () => {
 
 // ---- Orders Tab ----------------------------------------------------------
 
-const OrdersTab: React.FC = () => {
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+interface OrdersTabProps {
+  orders: Order[];
+  loading: boolean;
+  error: string | null;
+}
 
-  useEffect(() => {
-    getMyOrders(1, 50)
-      .then((res) => setOrders(res.items))
-      .catch((err) => setError(err?.response?.data?.message || "Failed to load orders."))
-      .finally(() => setLoading(false));
-  }, []);
+const OrdersTab: React.FC<OrdersTabProps> = ({ orders, loading, error }) => {
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   if (loading) return (
     <div className="space-y-3">
@@ -269,24 +268,92 @@ const TABS: { key: Tab; label: string; icon: string }[] = [
 ];
 
 const ProfilePage: React.FC = () => {
+  const { user: profile, avatarUrl } = useAuth();
   const [activeTab, setActiveTab] = useState<Tab>("profile");
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [ordersLoading, setOrdersLoading] = useState(true);
+  const [ordersError, setOrdersError] = useState<string | null>(null);
+
+  useEffect(() => {
+    getMyOrders(1, 50)
+      .then((res) => setOrders(res.items))
+      .catch((err) => setOrdersError(err?.response?.data?.message || "Failed to load orders."))
+      .finally(() => setOrdersLoading(false));
+  }, []);
+
+  const pendingCount = orders.filter((order) => {
+    const status = order.status.toLowerCase();
+    return status.includes("pending") || status.includes("process") || status.includes("ship");
+  }).length;
+
+  const deliveredCount = orders.filter((order) => order.status.toLowerCase().includes("deliver")).length;
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-4 py-10">
-      <div className="mb-6 border-b border-surface-border pb-4">
-        <h1 className="text-3xl font-black uppercase tracking-tight text-white">Account</h1>
-        <p className="mt-1 text-sm text-text-muted">Manage your profile and track your orders.</p>
-      </div>
+    <div className="mx-auto w-full max-w-6xl px-4 py-8 md:py-10">
+      <section className="mb-8 overflow-hidden rounded-[28px] border border-white/10 bg-[radial-gradient(circle_at_top_left,_rgba(230,0,0,0.14),_transparent_28%),linear-gradient(180deg,_rgba(255,255,255,0.03),_rgba(255,255,255,0.01))] p-6 md:p-8">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr),380px] lg:items-end">
+          <div>
+            <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.26em] text-primary">My account</p>
+            <h1 className="text-4xl font-black uppercase tracking-tight text-white md:text-5xl">Customer Area, Not A Random Form</h1>
+            <p className="mt-4 max-w-2xl text-sm leading-7 text-white/68 md:text-base">
+              This section now follows a more standard shop account layout: summary first, clear navigation on the side, and order history inside the same account shell instead of feeling detached.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link to="/shop" className="rounded-full bg-primary px-6 py-3 text-xs font-black uppercase tracking-[0.2em] text-white transition-colors hover:bg-red-600">
+                Continue shopping
+              </Link>
+              <Link to="/profile/orders" className="rounded-full border border-white/12 bg-white/[0.03] px-6 py-3 text-xs font-black uppercase tracking-[0.2em] text-white transition-colors hover:bg-white/[0.08]">
+                Full orders page
+              </Link>
+            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/40">Orders</p>
+              <p className="mt-2 text-3xl font-black text-white">{orders.length}</p>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/40">Active</p>
+              <p className="mt-2 text-3xl font-black text-white">{pendingCount}</p>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/40">Delivered</p>
+              <p className="mt-2 text-3xl font-black text-white">{deliveredCount}</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
-      <div className="flex flex-col md:flex-row gap-8">
-        {/* Sidebar nav */}
-        <nav className="md:w-52 shrink-0">
-          <ul className="space-y-1">
+      <div className="grid gap-8 lg:grid-cols-[280px,minmax(0,1fr)]">
+        <aside className="space-y-4">
+          <div className="rounded-[26px] border border-surface-border bg-surface-dark p-5">
+            <div className="flex items-center gap-4">
+              {avatarUrl ? (
+                <img src={avatarUrl} alt="Avatar" className="h-16 w-16 rounded-full object-cover border border-primary/40" />
+              ) : (
+                <div className="flex h-16 w-16 items-center justify-center rounded-full border border-primary/40 bg-primary/10 text-primary">
+                  <span className="material-symbols-outlined">person</span>
+                </div>
+              )}
+              <div className="min-w-0">
+                <p className="truncate text-lg font-bold text-white">{profile?.["full-name"] || 'Rider'}</p>
+                <p className="truncate text-sm text-text-muted">{profile?.email || 'Signed in customer'}</p>
+              </div>
+            </div>
+            <div className="mt-5 grid gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-white/60">
+              <div className="rounded-xl border border-white/8 bg-black/15 px-3 py-3">Centralized account navigation</div>
+              <div className="rounded-xl border border-white/8 bg-black/15 px-3 py-3">Inline order overview</div>
+              <div className="rounded-xl border border-white/8 bg-black/15 px-3 py-3">Cleaner profile editing</div>
+            </div>
+          </div>
+
+          <nav className="rounded-[26px] border border-surface-border bg-surface-dark p-3">
+            <ul className="space-y-1">
             {TABS.map((tab) => (
               <li key={tab.key}>
                 <button
                   onClick={() => setActiveTab(tab.key)}
-                  className={`w-full flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-bold text-left transition-colors ${activeTab === tab.key ? "bg-primary/15 text-primary border border-primary/30" : "text-text-muted hover:bg-white/5 border border-transparent"}`}
+                    className={`w-full flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold text-left transition-colors ${activeTab === tab.key ? "bg-primary/15 text-primary border border-primary/30" : "text-text-muted hover:bg-white/5 border border-transparent"}`}
                 >
                   <span className="material-symbols-outlined text-base">{tab.icon}</span>
                   {tab.label}
@@ -294,12 +361,12 @@ const ProfilePage: React.FC = () => {
               </li>
             ))}
           </ul>
-        </nav>
+          </nav>
+        </aside>
 
-        {/* Tab content */}
         <div className="flex-1 min-w-0">
           {activeTab === "profile" && <ProfileTab />}
-          {activeTab === "orders" && <OrdersTab />}
+          {activeTab === "orders" && <OrdersTab orders={orders} loading={ordersLoading} error={ordersError} />}
         </div>
       </div>
     </div>
