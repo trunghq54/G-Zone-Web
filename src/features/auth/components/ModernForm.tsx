@@ -2,12 +2,16 @@ import React, { useState } from "react";
 
 interface ModernFormProps {
   onLogin: (email, password) => Promise<void>;
+  onRegister: (name, email, password) => Promise<void>;
 }
 
-const ModernForm: React.FC<ModernFormProps> = ({ onLogin }) => {
+const ModernForm: React.FC<ModernFormProps> = ({ onLogin, onRegister }) => {
   const [isActive, setIsActive] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [signInEmail, setSignInEmail] = useState("");
+  const [signInPassword, setSignInPassword] = useState("");
+  const [signUpName, setSignUpName] = useState("");
+  const [signUpEmail, setSignUpEmail] = useState("");
+  const [signUpPassword, setSignUpPassword] = useState("");
 
   const handleRegisterClick = () => {
     setIsActive(true);
@@ -19,7 +23,12 @@ const ModernForm: React.FC<ModernFormProps> = ({ onLogin }) => {
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await onLogin(email, password);
+    await onLogin(signInEmail, signInPassword);
+  };
+
+  const handleRegisterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await onRegister(signUpName, signUpEmail, signUpPassword);
   };
 
   return (
@@ -31,10 +40,15 @@ const ModernForm: React.FC<ModernFormProps> = ({ onLogin }) => {
       {/* Sign-Up Form Container */}
       <div
         className={`form-container sign-up absolute top-0 h-full transition-all duration-600 ease-in-out left-0 w-1/2 opacity-0 z-10 ${
-          isActive ? "transform translate-x-full opacity-100 z-20" : ""
+          isActive
+            ? "transform translate-x-full opacity-100 z-20 pointer-events-auto"
+            : "pointer-events-none"
         }`}
       >
-        <form className="bg-white flex items-center justify-center flex-col px-10 h-full text-center">
+        <form
+          className="bg-white flex items-center justify-center flex-col px-10 h-full text-center"
+          onSubmit={handleRegisterSubmit}
+        >
           <h1 className="text-3xl font-bold text-black">Create Account</h1>
           <div className="my-5">
             <a
@@ -69,18 +83,27 @@ const ModernForm: React.FC<ModernFormProps> = ({ onLogin }) => {
             className="bg-gray-200 border-none my-2 py-2.5 px-4 text-sm rounded-lg w-full outline-none text-black"
             type="text"
             placeholder="Name"
+            value={signUpName}
+            onChange={(e) => setSignUpName(e.target.value)}
           />
           <input
             className="bg-gray-200 border-none my-2 py-2.5 px-4 text-sm rounded-lg w-full outline-none text-black"
             type="email"
             placeholder="Email"
+            value={signUpEmail}
+            onChange={(e) => setSignUpEmail(e.target.value)}
           />
           <input
             className="bg-gray-200 border-none my-2 py-2.5 px-4 text-sm rounded-lg w-full outline-none text-black"
             type="password"
             placeholder="Password"
+            value={signUpPassword}
+            onChange={(e) => setSignUpPassword(e.target.value)}
           />
-          <button className="bg-primary hover:bg-primary-hover text-white text-xs py-2.5 px-11 rounded-lg font-semibold tracking-wider uppercase mt-2.5 cursor-pointer">
+          <button
+            type="submit"
+            className="bg-primary hover:bg-primary-hover text-white text-xs py-2.5 px-11 rounded-lg font-semibold tracking-wider uppercase mt-2.5 cursor-pointer"
+          >
             Sign Up
           </button>
         </form>
@@ -89,7 +112,9 @@ const ModernForm: React.FC<ModernFormProps> = ({ onLogin }) => {
       {/* Sign-In Form Container */}
       <div
         className={`form-container sign-in absolute top-0 h-full transition-all duration-600 ease-in-out left-0 w-1/2 z-20 ${
-          isActive ? "transform translate-x-full opacity-0" : "opacity-100"
+          isActive
+            ? "transform translate-x-full opacity-0 pointer-events-none"
+            : "pointer-events-auto"
         }`}
       >
         <form
@@ -128,15 +153,15 @@ const ModernForm: React.FC<ModernFormProps> = ({ onLogin }) => {
             className="bg-gray-200 border-none my-2 py-2.5 px-4 text-sm rounded-lg w-full outline-none text-black"
             type="email"
             placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={signInEmail}
+            onChange={(e) => setSignInEmail(e.target.value)}
           />
           <input
             className="bg-gray-200 border-none my-2 py-2.5 px-4 text-sm rounded-lg w-full outline-none text-black"
             type="password"
             placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={signInPassword}
+            onChange={(e) => setSignInPassword(e.target.value)}
           />
           <a href="#" className="text-gray-700 text-sm no-underline my-4">
             Forget Your Password?

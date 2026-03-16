@@ -2,18 +2,35 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ModernForm from "../components/ModernForm";
 import { useAuth } from "@/providers/AuthProvider";
+import { registerApi } from "../api/auth-api";
 
 const AuthPage: React.FC = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const handleLogin = async (email, password) => {
     try {
       await login(email, password);
     } catch (err) {
       setError("Invalid email or password. Please try again.");
+      setSuccessMessage(null);
       console.error("Login failed:", err);
+    }
+  };
+
+  const handleRegister = async (name, email, password) => {
+    try {
+      await registerApi(name, email, password);
+      setSuccessMessage(
+        "Registration successful! Please sign in to continue."
+      );
+      setError(null);
+    } catch (err) {
+      setError("Registration failed. Please try again.");
+      setSuccessMessage(null);
+      console.error("Registration failed:", err);
     }
   };
 
@@ -47,8 +64,11 @@ const AuthPage: React.FC = () => {
         ></div>
 
         <div className="relative z-10">
-          <ModernForm onLogin={handleLogin} />
+          <ModernForm onLogin={handleLogin} onRegister={handleRegister} />
           {error && <p className="text-red-500 text-center mt-4">{error}</p>}
+          {successMessage && (
+            <p className="text-green-500 text-center mt-4">{successMessage}</p>
+          )}
         </div>
       </main>
 
