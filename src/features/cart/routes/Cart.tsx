@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import cartItemBg from '@/assets/cart-item-bg.png';
 
 const Cart: React.FC = () => {
   return (
@@ -21,7 +22,7 @@ const Cart: React.FC = () => {
              <div className="flex flex-col md:grid md:grid-cols-12 gap-6 p-5 items-center">
                <div className="col-span-6 flex items-start gap-5 w-full">
                  <div className="shrink-0 relative">
-                   <div className="bg-center bg-no-repeat bg-cover rounded-lg size-24 md:size-28 bg-[#150a0a] border border-[#3a1515]" style={{backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuATUIfXnuzjtvHHwWYNRsxvGXGWwZkt_Kr1KbVaOjIwgPLhSwAZmyXPmiNr5c7iELd-TqY7M_p6YygS4BQvHPc0Oj4QIKbqBzj-veXNAiWApdwcCi-ukV1cnvSuuGJb6PcbH9KY-8vXwgVOhbtLbLorESWBqrQ674bQG-Kqc-qIRGc8pzgznlJaHF0qq_1dLbtdoKfbUb1xY1HCEQTY50mWwiki04uEAoYJOfHeacEBqcVDwGclsxsl4xa5b55hlyn-cXRBLm-3DrlM')"}}></div>
+                   <div className="bg-center bg-no-repeat bg-cover rounded-lg size-24 md:size-28 bg-[#150a0a] border border-[#3a1515]" style={{backgroundImage: `url(${cartItemBg})`}}></div>
                  </div>
                  <div>
                    <h3 className="text-lg font-bold text-white leading-tight mb-1">Carbon Fiber Full-Face Helmet</h3>
@@ -65,5 +66,4 @@ const Cart: React.FC = () => {
     </div>
   );
 };
-
 export default Cart;

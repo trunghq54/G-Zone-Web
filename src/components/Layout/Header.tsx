@@ -1,8 +1,11 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '@/providers/AuthProvider';
+import ProfileDropdown from '../UI/ProfileDropdown';
 
 const Header: React.FC = () => {
   const location = useLocation();
+  const { isAuthenticated } = useAuth();
   const isCheckout = location.pathname === '/checkout';
 
   if (isCheckout) {
@@ -49,12 +52,18 @@ const Header: React.FC = () => {
             <span className="material-symbols-outlined">shopping_cart</span>
             <span className="absolute -top-1 -right-1 size-2 bg-primary rounded-full animate-pulse"></span>
           </Link>
-          <Link to="/dashboard" className="size-9 rounded-full bg-surface-dark border border-surface-border flex items-center justify-center text-white hover:border-primary transition-colors">
-            <span className="material-symbols-outlined text-[20px]">person</span>
-          </Link>
-          <Link to="/login" className="md:hidden text-white">
-             <span className="material-symbols-outlined">login</span>
-          </Link>
+          {isAuthenticated ? (
+            <ProfileDropdown />
+          ) : (
+            <Link to="/login" className="size-9 rounded-full bg-surface-dark border border-surface-border flex items-center justify-center text-white hover:border-primary transition-colors">
+              <span className="material-symbols-outlined text-[20px]">person</span>
+            </Link>
+          )}
+          {!isAuthenticated && (
+            <Link to="/login" className="md:hidden text-white">
+              <span className="material-symbols-outlined">login</span>
+            </Link>
+          )}
         </div>
       </div>
     </header>

@@ -1,4 +1,5 @@
 import React from 'react';
+import exhaust from '@/assets/exhaust.png';
 
 const Accessories: React.FC = () => {
   return (
@@ -27,7 +28,7 @@ const Accessories: React.FC = () => {
             <div className="group relative bg-surface-dark rounded-md border border-border-dark overflow-hidden transition-all hover:border-primary/50">
                 <div className="absolute top-3 right-3 z-10"><span className="bg-primary text-white text-[10px] font-bold px-2 py-1 uppercase rounded-sm">New Arrival</span></div>
                 <div className="h-64 w-full bg-[#151515] relative p-6 flex items-center justify-center overflow-hidden">
-                    <img className="h-full w-full object-cover opacity-80 group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrBLqbysqiS-7p-VeuNKa2KqYU0kcuC68GMqHvq6_SUdgCmMVDidBEifq8mlde9_6W4bFSC1_Mfwk6Y9cl2fa3PubpdaD_mxTTZxPcfc3SX1muJJy1C8M71dLpB3rqskvafzIr1Jl2Z2UWf4LpdDYVsloJjYYnpaC_6n-7pkeao0C-qKPLF18rMlkFXO6yXf3Ayw3ewsV3lXdFgv6CCSOLjIi5efmX9sn_-oxRUieEKv2jOUX4R6orIaDNerAXQKK6lF6GqpjRqA4L" alt="Exhaust" />
+                    <img className="h-full w-full object-cover opacity-80 group-hover:scale-110 transition-transform duration-500" src={exhaust} alt="Exhaust" />
                 </div>
                 <div className="p-5">
                     <div className="text-xs text-gray-500 font-mono mb-1">EXHAUST SYSTEMS</div>

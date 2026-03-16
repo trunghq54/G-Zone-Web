@@ -1,4 +1,6 @@
 import React from 'react';
+import dashboardAvatar from '@/assets/dashboard-avatar.png';
+import dashboardBike from '@/assets/dashboard-bike.png';
 
 const Dashboard: React.FC = () => {
   return (
@@ -7,7 +9,7 @@ const Dashboard: React.FC = () => {
       <aside className="hidden md:flex w-72 flex-col border-r border-surface-border bg-surface-dark p-6 sticky top-[65px] h-[calc(100vh-65px)] overflow-y-auto">
         <div className="flex flex-col gap-4 mb-8 pb-8 border-b border-surface-border">
           <div className="flex gap-4 items-center">
-            <div className="bg-center bg-no-repeat bg-cover rounded-full size-16 ring-2 ring-primary ring-offset-2 ring-offset-[#1E0A0A]" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuD4xjA1xDmBybJ-zy4g8gH5Y-1DKlrvzYpSZ_cIh6yV4C88TyAZOwO3S2vCUtDfiTbomUBl2vygay32TtWV64TCMy-Kv_rJtkJ3Sk3a5NfCVmeJpPjzy_Z_1Su4LUyKP8wUmj0Mb4dsoLCgAVXG-LryCFzQ1WIrGVKIx4IfJv_GoGvJhYkff_iaY0CS6MwbufiZ2kJT8_eKQC74D6OlAwmfiF97-BoUvtKnnkQJ3mQQ35cJVvhRGUiXlJiLgAdq7dq4GbBf-nPNllwz')" }}></div>
+            <div className="bg-center bg-no-repeat bg-cover rounded-full size-16 ring-2 ring-primary ring-offset-2 ring-offset-[#1E0A0A]" style={{ backgroundImage: `url(${dashboardAvatar})` }}></div>
             <div className="flex flex-col">
               <h1 className="text-white text-lg font-bold leading-tight uppercase tracking-wide">Alex 'Apex' Rider</h1>
               <p className="text-primary text-xs font-bold uppercase tracking-widest mt-1">Gold Tier Racer</p>
@@ -52,7 +54,7 @@ const Dashboard: React.FC = () => {
                 </div>
               </div>
               <div className="w-full sm:w-1/2 order-1 sm:order-2">
-                <div className="w-full h-48 sm:h-full bg-center bg-contain bg-no-repeat transform group-hover:scale-105 transition-transform duration-500" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuDjuJ2Jj-soVXxQM1zQai5LYxaqR3cUpxpGnepyWyuMFTtMXgNvGzOWHmAVpXaYiLu03peY97w7fHHcUiFvGECdHX-EoSMie2mnVt8EBw7EMuZQVhqXd04VcCovTufrsaxqjx6FrDfNx_eKRQ-JGrzoND-g4viGRIx0uAtBZbHOF5gxyIgTEVG0eL2CAe9a52hkg27I-dINSzravH-dxbH55e3OoxqVWnxQ_EFqVgknoFegQaNnSxss_YH4ly5GHzwv63oBtQskWQxJ')" }}></div>
+                <div className="w-full h-48 sm:h-full bg-center bg-contain bg-no-repeat transform group-hover:scale-105 transition-transform duration-500" style={{ backgroundImage: `url(${dashboardBike})` }}></div>
               </div>
             </div>
           </div>
@@ -86,5 +88,4 @@ const Dashboard: React.FC = () => {
     </div>
   );
 };
-
 export default Dashboard;

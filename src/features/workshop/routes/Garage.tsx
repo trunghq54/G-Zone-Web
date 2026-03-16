@@ -1,5 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import GarageCard1 from '../../../assets/garage-card-1.png';
+import GarageCard2 from '../../../assets/garage-card-2.png';
 
 const Garage: React.FC = () => {
   return (
@@ -34,7 +36,7 @@ const Garage: React.FC = () => {
           <div className="relative aspect-[4/3] overflow-hidden bg-[#2a1212]">
             <div className="absolute top-3 left-3 z-10 bg-green-500/10 text-green-400 border border-green-500/20 px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wide backdrop-blur-md">In Stock</div>
             <button className="absolute top-3 right-3 z-10 p-1.5 rounded-full bg-black/40 hover:bg-primary text-white backdrop-blur-sm transition-colors"><span className="material-symbols-outlined text-[18px]">close</span></button>
-            <div className="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuD1UNPJg55jzXl99IoV4woEHTnhi-mL4hVvVbVAvMC-Uu8YKqVVZcAapbuXuPWD1eA-QZMTKf2-R15L51UJDdvnQhpM20I_83Bx4VTjZC2bQlH1RoTGx6RbWos-mnO9FLBv_bPCTpFtLWFxWeez9IJBwzTVFAERo9ckZ5kCVrei7PO6XKocb-xl7RIr_e5VgeK6Z6kquyxptvYnagUC_wKn40jR21NTFvAGchVEV9NyBbin0yTCeDbn0aIbvHEdU_m-pc4EmbHQlNwW')" }}></div>
+            <div className="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105" style={{ backgroundImage: `url(${GarageCard1})` }}></div>
           </div>
           <div className="flex flex-col flex-1 p-5">
             <div className="flex-1">
@@ -53,7 +55,7 @@ const Garage: React.FC = () => {
           <div className="relative aspect-[4/3] overflow-hidden bg-[#2a1212]">
             <div className="absolute top-3 left-3 z-10 bg-orange-500/10 text-orange-400 border border-orange-500/20 px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wide backdrop-blur-md">Low Stock</div>
             <button className="absolute top-3 right-3 z-10 p-1.5 rounded-full bg-black/40 hover:bg-primary text-white backdrop-blur-sm transition-colors"><span className="material-symbols-outlined text-[18px]">close</span></button>
-            <div className="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuDrEBwVC46SxtKHfaGdJg1kp-1KjB2Y2Tag8DV66tvUmbF3FvSg5spSf2YxzL27kOEK1kf9aGidbvoL3-YsOZtOQ8LJwQYkr0ZBg1AFEqWFQGVfZ298JJZnoWLYrhfS2B1douPIxajYlFsgQ9J9ovIH01Be1Oy-51Y8_K4UqR54NGBSnqZcIzN1J6AOc5AA_miEtMuuTHQ81coW7sR49LKrdGMLRwM7l1-irF3_4cpzIeIprNGxNgU0Xnh5nSSPJW8xKHHFmnMIyUUb')" }}></div>
+            <div className="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105" style={{ backgroundImage: `url(${GarageCard2})` }}></div>
           </div>
           <div className="flex flex-col flex-1 p-5">
             <div className="flex-1">

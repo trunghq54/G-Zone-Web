@@ -1,4 +1,5 @@
 import React from 'react';
+import checkoutHelmet from '@/assets/checkout-helmet.png';
 
 const Checkout: React.FC = () => {
   return (
@@ -118,7 +119,7 @@ const Checkout: React.FC = () => {
                   {/* Item 1 */}
                   <div className="flex gap-4 group">
                     <div className="size-20 rounded bg-[#0D0D0D] border border-[#333] flex items-center justify-center overflow-hidden shrink-0">
-                      <img className="w-full h-full object-cover opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYdwQ2PBu6pq-1D9VoGzZHvu8hg6W0CL6TwL2ClXtWBdKWsp9PY4xQP-CAH6BERBZnAIzddybD_qoay7yT0NFc8rm-uJTKrjdgbOCXc-rgjVRjQTg-QBjwlD7v4Hin8SD6zuG6eIfZCvS24pQzNb3Fx8m1kv30y9cFaTmojl06tJqrVijgNDGY5X4IUIukiEKkRbHPSFq_8ym02VNMRXdhmYSWqQZwYCBXa8oNFH7P0EvkG5HoBWR446E9Js_howZFBlO0XddednVP" alt="Helmet" />
+                      <img className="w-full h-full object-cover opacity-80" src={checkoutHelmet} alt="Helmet" />
                     </div>
                     <div className="flex flex-col justify-center flex-1">
                       <div className="flex justify-between items-start">
