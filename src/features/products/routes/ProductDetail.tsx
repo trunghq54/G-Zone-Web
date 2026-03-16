@@ -1,104 +1,123 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import ProductDetailHelmet from '../../../assets/product-detail-helmet.png';
-import ProductDetailHelmet2 from '../../../assets/product-detail-helmet-2.png';
-import ProductDetailHelmet3 from '../../../assets/product-detail-helmet-3.png';
-import ProductDetailHelmet4 from '../../../assets/product-detail-helmet-4.png';
-import ProductDetailHelmet5 from '../../../assets/product-detail-helmet-5.png';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Product, getProductById } from '@/features/admin/api/product-api';
+import { addToCart } from '@/lib/cart';
 
 const ProductDetail: React.FC = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [product, setProduct] = useState<Product | null>(null);
+  const [qty, setQty] = useState(1);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!id) {
+      navigate('/shop');
+      return;
+    }
+
+    const loadProduct = async () => {
+      try {
+        const data = await getProductById(id);
+        setProduct(data);
+      } catch (error) {
+        console.error('Failed to load product', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProduct();
+  }, [id, navigate]);
+
+  const handleAddToCart = () => {
+    if (!product) {
+      return;
+    }
+
+    addToCart({
+      productId: product.productId,
+      productName: product.productName,
+      sku: product.sku,
+      basePrice: product.basePrice,
+      quantity: qty,
+      categoryId: product.categoryId,
+      warrantyPeriodMonths: product.warrantyPeriodMonths,
+    });
+
+    navigate('/cart');
+  };
+
+  if (loading) {
+    return <div className="mx-auto max-w-6xl px-4 py-10 text-text-muted">Loading product...</div>;
+  }
+
+  if (!product) {
+    return <div className="mx-auto max-w-6xl px-4 py-10 text-text-muted">Product not found.</div>;
+  }
+
   return (
-    <div className="layout-container flex h-full grow flex-col max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 py-6 w-full">
+    <div className="layout-container flex h-full grow flex-col max-w-[1280px] mx-auto px-4 md:px-8 py-6 w-full">
       <nav className="flex flex-wrap gap-2 py-4 mb-4 text-sm font-medium">
         <Link to="/" className="text-text-muted hover:text-white transition-colors">Home</Link>
         <span className="text-text-muted">/</span>
-        <Link to="/shop" className="text-text-muted hover:text-white transition-colors">Helmets</Link>
+        <Link to="/shop" className="text-text-muted hover:text-white transition-colors">Shop</Link>
         <span className="text-text-muted">/</span>
-        <span className="text-white">Racing</span>
-        <span className="text-text-muted">/</span>
-        <span className="text-primary">Apex Predator R1</span>
+        <span className="text-primary">{product.productName}</span>
       </nav>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-        <div className="lg:col-span-7 flex flex-col gap-6">
-          <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-surface-dark border border-[#3a1a1a] group">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#2e1414] to-background-dark opacity-50 pointer-events-none"></div>
-            <div className="w-full h-full bg-center bg-contain bg-no-repeat relative z-10 transition-transform duration-500 ease-out group-hover:scale-105" style={{ backgroundImage: `url(${ProductDetailHelmet})` }}></div>
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 px-4 py-2 rounded-full bg-black/60 backdrop-blur-sm border border-white/10 text-white text-xs font-bold uppercase tracking-wider cursor-pointer hover:bg-primary hover:border-primary transition-colors">
-              <span className="material-symbols-outlined text-sm">360</span> View 360°
-            </div>
-          </div>
-          <div className="grid grid-cols-4 gap-4">
-             {[ProductDetailHelmet2, ProductDetailHelmet3, ProductDetailHelmet4, ProductDetailHelmet5].map((url, i) => (
-                <button key={i} className={`aspect-square rounded-lg border-2 ${i === 0 ? 'border-primary' : 'border-[#3a1a1a] hover:border-white/50'} bg-surface-dark overflow-hidden relative transition-colors`}>
-                  <div className="w-full h-full bg-center bg-cover" style={{ backgroundImage: `url('${url}')` }}></div>
-                </button>
-             ))}
+        <div className="lg:col-span-7">
+          <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-surface-dark border border-[#3a1a1a] group flex items-center justify-center">
+            <span className="material-symbols-outlined text-9xl text-white/20">inventory_2</span>
           </div>
         </div>
 
         <div className="lg:col-span-5 relative">
           <div className="sticky top-24 flex flex-col gap-6 bg-surface-dark p-6 md:p-8 rounded-xl border border-[#3a1a1a] shadow-2xl shadow-black/50">
             <div className="border-b border-[#3a1a1a] pb-6">
-              <div className="flex justify-between items-start mb-2">
-                <h3 className="text-text-muted text-sm font-bold uppercase tracking-widest">Apex Moto Racing Series</h3>
-                <div className="flex items-center gap-1 bg-[#2e1414] px-2 py-1 rounded">
-                    <span className="material-symbols-outlined text-primary text-sm fill-current">star</span>
-                    <span className="text-white text-xs font-bold">4.9</span>
-                    <span className="text-text-muted text-xs">(128)</span>
-                </div>
-              </div>
-              <h1 className="text-white text-3xl md:text-4xl font-bold leading-tight mb-4">Apex Predator R1 Carbon</h1>
-              <p className="text-[#a0a0a0] text-sm leading-relaxed mb-4 font-body">Engineered for the track. The R1 Carbon features active aerodynamics, a 6K carbon fiber shell, and a multi-density EPS liner.</p>
+              <h3 className="text-text-muted text-sm font-bold uppercase tracking-widest mb-1">{product.brand || 'G-Zone Collection'}</h3>
+              <h1 className="text-white text-3xl md:text-4xl font-bold leading-tight mb-4">{product.productName}</h1>
+              <p className="text-[#a0a0a0] text-sm leading-relaxed mb-4">{product.description || 'No description yet.'}</p>
               <div className="flex items-baseline gap-3">
-                <span className="text-primary text-3xl font-bold">$699.00</span>
-                <span className="text-[#6b6b6b] line-through text-lg font-body">$849.00</span>
-                <span className="text-[#4caf50] text-xs font-bold bg-[#1b3320] px-2 py-1 rounded ml-auto">In Stock</span>
+                <span className="text-primary text-3xl font-bold">${product.basePrice.toFixed(2)}</span>
+                <span className="text-[#4caf50] text-xs font-bold bg-[#1b3320] px-2 py-1 rounded ml-auto">{product.isActive ? 'In Stock' : 'Inactive'}</span>
               </div>
             </div>
 
-            <div className="flex flex-col gap-6">
-                <div>
-                    <span className="block text-white text-sm font-bold mb-3 uppercase tracking-wide">Select Colorway</span>
-                    <div className="flex gap-4">
-                        <button className="size-10 rounded-full bg-[#111] border-2 border-primary ring-2 ring-primary/30"></button>
-                        <button className="size-10 rounded-full bg-[#e60000] border-2 border-transparent hover:border-primary transition-all"></button>
-                        <button className="size-10 rounded-full bg-[#f0f0f0] border-2 border-transparent hover:border-primary transition-all"></button>
-                    </div>
-                </div>
-                <div>
-                    <div className="flex justify-between items-center mb-3">
-                        <span className="text-white text-sm font-bold uppercase tracking-wide">Select Size</span>
-                        <button className="text-text-muted text-xs underline hover:text-white transition-colors">Size Guide</button>
-                    </div>
-                    <div className="grid grid-cols-4 gap-3">
-                        {['S', 'M', 'L', 'XL'].map((size, i) => (
-                             <button key={i} className={`h-10 rounded-md border text-sm font-bold transition-all ${size === 'M' ? 'border-primary bg-primary/10 text-primary' : 'border-[#3a1a1a] bg-[#240f0f] text-white hover:border-primary'}`}>{size}</button>
-                        ))}
-                    </div>
-                </div>
+            <div className="space-y-3 text-sm text-text-muted">
+              <p>SKU: <span className="text-white font-medium">{product.sku}</span></p>
+              <p>Material: <span className="text-white font-medium">{product.material || 'N/A'}</span></p>
+              <p>Weight: <span className="text-white font-medium">{product.weight || 0} kg</span></p>
+              <p>Dimensions: <span className="text-white font-medium">{product.dimension || 'N/A'}</span></p>
+              <p>Warranty: <span className="text-white font-medium">{product.warrantyPeriodMonths || 0} months</span></p>
             </div>
 
-            <div className="flex gap-3 pt-2">
-                <button className="flex-1 h-14 bg-primary hover:bg-[#c20000] active:scale-[0.98] text-white rounded-md font-bold text-lg uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20">
-                    <span>Add to Cart</span>
-                    <span className="material-symbols-outlined">shopping_bag</span>
-                </button>
+            <div className="flex items-center gap-3 pt-2">
+              <button
+                onClick={() => setQty((prev) => Math.max(1, prev - 1))}
+                className="h-11 w-11 rounded-md border border-surface-border text-white hover:border-primary"
+              >
+                -
+              </button>
+              <div className="h-11 min-w-14 rounded-md border border-surface-border px-4 flex items-center justify-center text-white font-bold">
+                {qty}
+              </div>
+              <button
+                onClick={() => setQty((prev) => prev + 1)}
+                className="h-11 w-11 rounded-md border border-surface-border text-white hover:border-primary"
+              >
+                +
+              </button>
             </div>
-            
-             <div className="border-t border-[#3a1a1a] mt-2">
-                <details className="group py-4 border-b border-[#3a1a1a] cursor-pointer" open>
-                    <summary className="flex justify-between items-center font-bold text-white list-none">
-                        <span className="uppercase text-sm tracking-wide">Technical Specs</span>
-                        <span className="material-symbols-outlined transition-transform group-open:rotate-180 text-text-muted">expand_more</span>
-                    </summary>
-                    <div className="text-[#a0a0a0] text-sm mt-3 space-y-2 font-body">
-                         <div className="flex justify-between"><span>Shell Material</span><span className="text-white font-medium">6K Carbon Fiber</span></div>
-                         <div className="flex justify-between"><span>Weight</span><span className="text-white font-medium">1250g +/- 50g</span></div>
-                         <div className="flex justify-between"><span>Certification</span><span className="text-white font-medium">DOT & ECE 22.06</span></div>
-                    </div>
-                </details>
-             </div>
+
+            <button
+              onClick={handleAddToCart}
+              className="h-14 bg-primary hover:bg-[#c20000] text-white rounded-md font-bold text-lg uppercase tracking-wider transition-all flex items-center justify-center gap-2"
+            >
+              <span>Add to Cart</span>
+              <span className="material-symbols-outlined">shopping_bag</span>
+            </button>
           </div>
         </div>
       </div>

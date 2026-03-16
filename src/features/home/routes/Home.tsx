@@ -1,11 +1,40 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import highPerformanceRedSportMotorcycle from '@/assets/high-performance-red-sport-motorcycle.png';
 import helmet from '@/assets/helmet.png';
 import jacket from '@/assets/jacket.png';
 import gloves from '@/assets/gloves.png';
+import { Product, getProducts } from '@/features/admin/api/product-api';
+import { addToCart } from '@/lib/cart';
 
 const Home: React.FC = () => {
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const data = await getProducts(1, 8);
+        setFeaturedProducts(data.slice(0, 4));
+      } catch (error) {
+        console.error('Failed to load featured products', error);
+      }
+    };
+
+    loadProducts();
+  }, []);
+
+  const quickAdd = (product: Product) => {
+    addToCart({
+      productId: product.productId,
+      productName: product.productName,
+      sku: product.sku,
+      basePrice: product.basePrice,
+      quantity: 1,
+      categoryId: product.categoryId,
+      warrantyPeriodMonths: product.warrantyPeriodMonths,
+    });
+  };
+
   return (
     <div className="w-full">
       {/* Hero Section */}
@@ -26,18 +55,23 @@ const Home: React.FC = () => {
                 <span className="text-xs font-bold uppercase tracking-widest text-primary">New Arrival</span>
               </div>
               <h1 className="mb-4 text-5xl font-black uppercase leading-none tracking-tighter text-white sm:text-6xl lg:text-7xl">
-                Dominate<br/>The Tarmac
+                Ride Ready<br/>Everyday
               </h1>
               <p className="mb-8 max-w-md text-lg text-gray-300">
-                Precision-engineered protective gear designed for the modern rider. Experience speed without compromise.
+                Find certified gear, compare real prices, and checkout with COD in minutes.
               </p>
-              <div className="flex flex-wrap gap-4">
+              <div className="mb-5 flex flex-wrap gap-4">
                 <Link to="/shop" className="inline-flex h-12 items-center justify-center rounded-lg bg-primary px-8 text-base font-bold tracking-wide text-white transition-all hover:bg-primary-hover hover:shadow-[0_0_20px_rgba(230,0,0,0.4)]">
-                  SHOP COLLECTION
+                  SHOP NOW
                 </Link>
-                <button className="inline-flex h-12 items-center justify-center rounded-lg border border-white/20 bg-white/5 px-8 text-base font-bold tracking-wide text-white backdrop-blur-sm transition-all hover:bg-white/10">
-                  VIEW LOOKBOOK
-                </button>
+                <Link to="/profile/orders" className="inline-flex h-12 items-center justify-center rounded-lg border border-white/20 bg-white/5 px-8 text-base font-bold tracking-wide text-white backdrop-blur-sm transition-all hover:bg-white/10">
+                  TRACK ORDER
+                </Link>
+              </div>
+              <div className="grid w-full max-w-xl grid-cols-1 gap-3 sm:grid-cols-3">
+                <div className="rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-xs font-bold uppercase tracking-wider text-white/80">COD available</div>
+                <div className="rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-xs font-bold uppercase tracking-wider text-white/80">Fast support</div>
+                <div className="rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-xs font-bold uppercase tracking-wider text-white/80">Verified gear</div>
               </div>
             </div>
           </div>
@@ -77,6 +111,57 @@ const Home: React.FC = () => {
               <h3 className="text-2xl font-black uppercase text-white group-hover:text-primary transition-colors">Gloves</h3>
             </div>
           </Link>
+        </div>
+      </div>
+
+      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mb-6 flex items-end justify-between border-b border-surface-border pb-4">
+          <div>
+            <h2 className="text-3xl font-bold uppercase tracking-tight text-white">Hot Picks</h2>
+            <p className="mt-1 text-sm text-text-muted">Bestsellers selected from your latest admin inventory.</p>
+          </div>
+          <Link to="/shop" className="text-sm font-bold text-primary hover:text-white">VIEW ALL -&gt;</Link>
+        </div>
+
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {featuredProducts.map((product) => (
+            <div key={product.productId} className="rounded-xl border border-surface-border bg-surface-dark p-5">
+              <p className="mb-2 text-xs font-bold uppercase tracking-wider text-text-muted">{product.brand || 'G-Zone'}</p>
+              <Link to={`/product/${product.productId}`} className="mb-3 block text-lg font-bold text-white hover:text-primary transition-colors">
+                {product.productName}
+              </Link>
+              <p className="mb-4 text-sm text-text-muted line-clamp-2">{product.description || 'Premium riding gear for daily and track usage.'}</p>
+              <div className="flex items-center justify-between">
+                <span className="text-xl font-black text-primary">${product.basePrice.toFixed(2)}</span>
+                <button
+                  onClick={() => quickAdd(product)}
+                  className="rounded-md bg-primary px-3 py-2 text-xs font-bold uppercase tracking-wider text-white hover:bg-red-600 transition-colors"
+                >
+                  Add
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="mx-auto max-w-7xl px-4 pb-2 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="rounded-lg border border-surface-border bg-surface-dark p-4">
+            <p className="text-xs font-bold uppercase tracking-wider text-primary">Step 1</p>
+            <p className="mt-1 text-white font-bold">Browse Products</p>
+            <p className="mt-1 text-sm text-text-muted">Filter by category and compare prices quickly.</p>
+          </div>
+          <div className="rounded-lg border border-surface-border bg-surface-dark p-4">
+            <p className="text-xs font-bold uppercase tracking-wider text-primary">Step 2</p>
+            <p className="mt-1 text-white font-bold">Add To Cart</p>
+            <p className="mt-1 text-sm text-text-muted">Adjust quantity directly from your cart anytime.</p>
+          </div>
+          <div className="rounded-lg border border-surface-border bg-surface-dark p-4">
+            <p className="text-xs font-bold uppercase tracking-wider text-primary">Step 3</p>
+            <p className="mt-1 text-white font-bold">Checkout COD</p>
+            <p className="mt-1 text-sm text-text-muted">Place order with cash-on-delivery in one simple form.</p>
+          </div>
         </div>
       </div>
 

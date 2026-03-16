@@ -1,12 +1,24 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/providers/AuthProvider';
 import ProfileDropdown from '../UI/ProfileDropdown';
+import { getCart, getCartCount } from '@/lib/cart';
 
 const Header: React.FC = () => {
   const location = useLocation();
   const { isAuthenticated } = useAuth();
   const isCheckout = location.pathname === '/checkout';
+  const [cartCount, setCartCount] = useState(0);
+
+  useEffect(() => {
+    const syncCartCount = () => {
+      setCartCount(getCartCount(getCart()));
+    };
+
+    syncCartCount();
+    window.addEventListener('cart:updated', syncCartCount);
+    return () => window.removeEventListener('cart:updated', syncCartCount);
+  }, []);
 
   if (isCheckout) {
     return (
@@ -50,7 +62,11 @@ const Header: React.FC = () => {
           </div>
           <Link to="/cart" className="text-white hover:text-primary transition-colors relative">
             <span className="material-symbols-outlined">shopping_cart</span>
-            <span className="absolute -top-1 -right-1 size-2 bg-primary rounded-full animate-pulse"></span>
+            {cartCount > 0 && (
+              <span className="absolute -top-2 -right-2 min-w-5 h-5 px-1 rounded-full bg-primary text-[10px] font-bold text-white flex items-center justify-center">
+                {cartCount > 99 ? '99+' : cartCount}
+              </span>
+            )}
           </Link>
           {isAuthenticated ? (
             <ProfileDropdown />

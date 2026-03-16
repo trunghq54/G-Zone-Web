@@ -44,17 +44,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       });
     };
 
-    if (profile && profile["avatar-url"]) {
-      try {
-        const blob = await getAvatarImage(profile["avatar-url"]);
-        const newAvatarUrl = URL.createObjectURL(blob);
-        setNewUrl(newAvatarUrl);
-      } catch (error) {
-        console.error("Failed to fetch avatar:", error);
-        setNewUrl(null); // or a fallback
-      }
-    } else {
-      setNewUrl(null); // No avatar URL in profile
+    const avatarPath = profile?.["avatar-url"];
+    const isInvalidAvatarPath =
+      !avatarPath ||
+      avatarPath === "string" ||
+      avatarPath === "/string" ||
+      avatarPath === "null";
+
+    if (isInvalidAvatarPath) {
+      setNewUrl(null);
+      return;
+    }
+
+    try {
+      const blob = await getAvatarImage(avatarPath);
+      const newAvatarUrl = URL.createObjectURL(blob);
+      setNewUrl(newAvatarUrl);
+    } catch (error) {
+      console.error("Failed to fetch avatar:", error);
+      setNewUrl(null);
     }
   }, []); // Now has no dependencies, is stable.
 
