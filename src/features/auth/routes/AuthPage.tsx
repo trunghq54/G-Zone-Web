@@ -11,7 +11,6 @@ const AuthPage: React.FC = () => {
   const handleLogin = async (email, password) => {
     try {
       await login(email, password);
-      navigate("/"); // Navigate after login is successful
     } catch (err) {
       setError("Invalid email or password. Please try again.");
       console.error("Login failed:", err);

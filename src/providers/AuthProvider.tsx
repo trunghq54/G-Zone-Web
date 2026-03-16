@@ -84,33 +84,38 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     } finally {
       setLoading(false);
     }
-  }, [fetchAndSetAvatar, logout]);
+  }, [fetchAndSetAvatar]);
 
   useEffect(() => {
     const storedUser = getUser();
     if (storedUser) {
-      // We have a user from storage, but we need to refresh their data
-      // to get the latest profile details, including avatar.
+      setUserState(storedUser);
       refreshUser();
     } else {
       setLoading(false);
     }
-  }, [refreshUser]); // Run only when refreshUser is created
+  }, [refreshUser]);
 
   const login = useCallback(
     async (email, password) => {
       try {
         const userData = await loginApi(email, password);
         setUser(userData); // Store the initial user data (like tokens)
-        await refreshUser(); // Refresh to get full profile
+        setUserState(userData); // Set the user state
       } catch (error) {
         throw error;
       }
     },
-    [refreshUser]
+    []
   );
 
   const isAuthenticated = user !== null;
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
 
   const contextValue = useMemo(
     () => ({

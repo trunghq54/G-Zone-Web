@@ -66,17 +66,17 @@ const ModernForm: React.FC<ModernFormProps> = ({ onLogin }) => {
             or use your email for registration
           </span>
           <input
-            className="bg-gray-200 border-none my-2 py-2.5 px-4 text-sm rounded-lg w-full outline-none"
+            className="bg-gray-200 border-none my-2 py-2.5 px-4 text-sm rounded-lg w-full outline-none text-black"
             type="text"
             placeholder="Name"
           />
           <input
-            className="bg-gray-200 border-none my-2 py-2.5 px-4 text-sm rounded-lg w-full outline-none"
+            className="bg-gray-200 border-none my-2 py-2.5 px-4 text-sm rounded-lg w-full outline-none text-black"
             type="email"
             placeholder="Email"
           />
           <input
-            className="bg-gray-200 border-none my-2 py-2.5 px-4 text-sm rounded-lg w-full outline-none"
+            className="bg-gray-200 border-none my-2 py-2.5 px-4 text-sm rounded-lg w-full outline-none text-black"
             type="password"
             placeholder="Password"
           />
@@ -125,14 +125,14 @@ const ModernForm: React.FC<ModernFormProps> = ({ onLogin }) => {
           </div>
           <span className="text-xs text-black">or use your email password</span>
           <input
-            className="bg-gray-200 border-none my-2 py-2.5 px-4 text-sm rounded-lg w-full outline-none"
+            className="bg-gray-200 border-none my-2 py-2.5 px-4 text-sm rounded-lg w-full outline-none text-black"
             type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
           <input
-            className="bg-gray-200 border-none my-2 py-2.5 px-4 text-sm rounded-lg w-full outline-none"
+            className="bg-gray-200 border-none my-2 py-2.5 px-4 text-sm rounded-lg w-full outline-none text-black"
             type="password"
             placeholder="Password"
             value={password}
