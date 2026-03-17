@@ -19,7 +19,7 @@ interface AuthContextType {
   avatarUrl: string | null;
   login: (email, password) => Promise<void>;
   logout: () => void;
-  refreshUser: () => Promise<void>;
+  refreshUser: () => Promise<any | null>;
   isAuthenticated: boolean;
 }
 
@@ -83,10 +83,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setUser(newUser); // Save merged data back to localStorage
       setUserState(newUser); // Update React state
       await fetchAndSetAvatar(newUser);
+      return newUser;
     } catch (error) {
       console.error("Failed to refresh user, logging out.", error);
       // If we can't get the user profile, they are likely unauthenticated
       logout();
+      return null;
     } finally {
       setLoading(false);
     }
@@ -116,10 +118,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
         // Now, refresh the user state to get the full, canonical user profile
         // from the server, which will also trigger the avatar fetch.
-        await refreshUser();
+        const user = await refreshUser();
 
         // Navigate only after the full user profile is loaded.
-        navigate("/");
+        if (user && (user.role === "Admin" || user.role === "Staff")) {
+          navigate("/dashboard");
+        } else {
+          navigate("/");
+        }
       } catch (error) {
         // If login fails, ensure we clean up any partial state.
         removeUser();

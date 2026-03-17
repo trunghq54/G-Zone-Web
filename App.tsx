@@ -13,6 +13,7 @@ import ProductDetail from "@/features/products/routes/ProductDetail";
 import Cart from "@/features/cart/routes/Cart";
 import Accessories from "@/features/products/routes/Accessories";
 import { AuthProvider } from "@/providers/AuthProvider";
+import BadRequest from "@/components/pages/BadRequest";
 
 const MainLayout: React.FC = () => {
   return (
@@ -48,6 +49,7 @@ const App: React.FC = () => {
             <Route path="/profile/addresses" element={<AddressPage />} />
           </Route>
           <Route path="/login" element={<Login />} />
+          <Route path="/*" element={<BadRequest />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
