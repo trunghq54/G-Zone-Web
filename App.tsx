@@ -5,15 +5,17 @@ import Footer from "@/components/Layout/Footer";
 import Home from "@/features/home/routes/Home";
 import MissionLog from "@/features/missions/routes/MissionLog";
 import Support from "@/features/support/routes/Support";
-import Checkout from "@/features/checkout/routes/Checkout";
+import Checkout from "./src/features/checkout/routes/Checkout";
 import Garage from "@/features/workshop/routes/Garage";
 import Dashboard from "@/features/dashboard/routes/Dashboard";
 import Login from "@/features/auth/routes/AuthPage";
-import ProductDetail from "@/features/products/routes/ProductDetail";
-import Cart from "@/features/cart/routes/Cart";
+import ProductDetail from "./src/features/products/routes/ProductDetail";
+import Cart from "./src/features/cart/routes/Cart";
 import Accessories from "@/features/products/routes/Accessories";
 import { AuthProvider } from "@/providers/AuthProvider";
 import BadRequest from "@/components/pages/BadRequest";
+import ProtectedRoute from "@/components/Routes/ProtectedRoute";
+import AdminRoute from "@/components/Routes/AdminRoute";
 
 const MainLayout: React.FC = () => {
   return (
@@ -29,28 +31,55 @@ const MainLayout: React.FC = () => {
 
 import ProfilePage from "@/features/accounts/routes/ProfilePage";
 import AddressPage from "@/features/accounts/routes/AddressPage";
+import MyOrders from "./src/features/orders/routes/MyOrders";
+
+import AdminLayout from "@/components/Layout/Admin/AdminLayout";
+import AdminDashboard from "@/features/admin/routes/AdminDashboard";
+import AdminCategories from "@/features/admin/routes/AdminCategories";
+import AdminProducts from "@/features/admin/routes/AdminProducts";
+import AdminOrders from "./src/features/admin/routes/AdminOrders";
+import { ToastProvider } from "@/providers/ToastProvider";
 
 const App: React.FC = () => {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Routes>
-          <Route element={<MainLayout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/missions" element={<MissionLog />} />
-            <Route path="/support" element={<Support />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/garage" element={<Garage />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/product" element={<ProductDetail />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/shop" element={<Accessories />} />
-            <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/profile/addresses" element={<AddressPage />} />
-          </Route>
-          <Route path="/login" element={<Login />} />
-          <Route path="/*" element={<BadRequest />} />
-        </Routes>
+        <ToastProvider>
+          <Routes>
+            {/* Client Routes */}
+            <Route element={<MainLayout />}>
+              {/* Public Routes */}
+              <Route path="/" element={<Home />} />
+              <Route path="/shop" element={<Accessories />} />
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/profile/addresses" element={<AddressPage />} />
+              <Route path="/product/:id" element={<ProductDetail />} />
+              <Route path="/support" element={<Support />} />
+
+              {/* Protected Routes (Logged in users only) */}
+              <Route path="/missions" element={<MissionLog />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/garage" element={<Garage />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/profile/orders" element={<MyOrders />} />
+              {/* Keep this dashboard for customers */}
+              <Route path="/dashboard" element={<Dashboard />} />
+            </Route>
+
+            {/* Admin Routes */}
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="categories" element={<AdminCategories />} />
+              <Route path="products" element={<AdminProducts />} />
+              <Route path="orders" element={<AdminOrders />} />
+            </Route>
+
+            {/* Auth Route */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/*" element={<BadRequest />} />
+          </Routes>
+        </ToastProvider>
       </AuthProvider>
     </BrowserRouter>
   );

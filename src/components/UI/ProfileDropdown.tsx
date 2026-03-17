@@ -78,6 +78,18 @@ const ProfileDropdown: React.FC = () => {
             <p className="text-xs text-gray-400 truncate">{user.email}</p>
           </div>
           <div className="py-2">
+            {user.role?.toLowerCase() === "admin" && (
+              <Link
+                to="/admin"
+                className="flex items-center gap-3 px-4 py-2 text-sm text-primary hover:bg-[#333] transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                <span className="material-symbols-outlined text-base text-primary">
+                  safety_divider
+                </span>
+                <span>Admin Panel</span>
+              </Link>
+            )}
             {menuItems.map((item) => (
               <Link
                 key={item.path}
