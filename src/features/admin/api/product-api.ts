@@ -1,5 +1,4 @@
-
-import api from "@/lib/api";
+import api from "@/lib/axios-api";
 
 export interface Product {
   productId: string;
@@ -46,14 +45,14 @@ export interface ProductRequest {
 
 const mapToBackend = (data: ProductRequest) => ({
   "product-name": data.productName,
-  "sku": data.sku || "",
-  "description": data.description || "",
+  sku: data.sku || "",
+  description: data.description || "",
   "base-price": data.basePrice,
-  "brand": data.brand || "",
-  "material": data.material || "",
-  "specifications": data.specifications || "",
-  "weight": data.weight,
-  "dimension": data.dimension || "",
+  brand: data.brand || "",
+  material: data.material || "",
+  specifications: data.specifications || "",
+  weight: data.weight,
+  dimension: data.dimension || "",
   "view-count": data.viewCount || 0,
   "sold-count": data.soldCount || 0,
   "average-rating": data.averageRating || 0,
@@ -88,7 +87,9 @@ const mapToFrontend = (data: any): Product => ({
 });
 
 export const getProducts = async (pageNumber = 1, pageSize = 50) => {
-  const response = await api.get(`/products?pageNumber=${pageNumber}&pageSize=${pageSize}`);
+  const response = await api.get(
+    `/products?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+  );
   const list = response.data?.data?.["data-list"] || [];
   return list.map(mapToFrontend);
 };
@@ -112,4 +113,3 @@ export const deleteProduct = async (id: string) => {
   const response = await api.delete(`/products/${id}`);
   return response.data;
 };
-

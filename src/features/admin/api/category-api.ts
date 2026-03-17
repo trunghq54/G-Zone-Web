@@ -1,4 +1,4 @@
-import api from "@/lib/api";
+import api from "@/lib/axios-api";
 
 export interface Category {
   categoryId: string;
@@ -25,8 +25,8 @@ export interface CategoryRequest {
 
 const mapToBackend = (data: CategoryRequest) => ({
   "category-name": data.categoryName,
-  "description": data.description || "",
-  "slug": data.slug || "",
+  description: data.description || "",
+  slug: data.slug || "",
   "image-url": data.imageUrl || "",
   "display-order": data.displayOrder,
   "is-active": data.isActive,
@@ -47,7 +47,9 @@ const mapToFrontend = (data: any): Category => ({
 });
 
 export const getCategories = async (pageNumber = 1, pageSize = 50) => {
-  const response = await api.get(`/categories?pageNumber=${pageNumber}&pageSize=${pageSize}`);
+  const response = await api.get(
+    `/categories?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+  );
   const list = response.data?.data?.["data-list"] || [];
   return list.map(mapToFrontend);
 };

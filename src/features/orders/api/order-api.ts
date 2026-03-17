@@ -1,4 +1,4 @@
-import api from "@/lib/api";
+import api from "@/lib/axios-api";
 
 export interface OrderDetailItemRequest {
   productVariantId?: string;
@@ -157,10 +157,10 @@ const toQuery = (query?: Record<string, string | number | undefined>) => {
 export const getOrders = async (
   pageNumber = 1,
   pageSize = 20,
-  query?: Record<string, string | number | undefined>
+  query?: Record<string, string | number | undefined>,
 ) => {
   const response = await api.get(
-    `/orders?pageNumber=${pageNumber}&pageSize=${pageSize}${toQuery(query)}`
+    `/orders?pageNumber=${pageNumber}&pageSize=${pageSize}${toQuery(query)}`,
   );
 
   const payload = response.data?.data;
@@ -176,7 +176,7 @@ export const getOrders = async (
 
 export const getMyOrders = async (pageNumber = 1, pageSize = 20) => {
   const response = await api.get(
-    `/orders/my-orders?pageNumber=${pageNumber}&pageSize=${pageSize}`
+    `/orders/my-orders?pageNumber=${pageNumber}&pageSize=${pageSize}`,
   );
 
   const payload = response.data?.data;
@@ -196,6 +196,9 @@ export const createOrder = async (order: OrderRequest) => {
 };
 
 export const patchOrder = async (orderId: string, patch: OrderPatchRequest) => {
-  const response = await api.patch(`/orders/${orderId}`, mapOrderPatchToBackend(patch));
+  const response = await api.patch(
+    `/orders/${orderId}`,
+    mapOrderPatchToBackend(patch),
+  );
   return response.data;
 };

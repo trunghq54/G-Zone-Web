@@ -14,8 +14,6 @@ import Cart from "./src/features/cart/routes/Cart";
 import Accessories from "@/features/products/routes/Accessories";
 import { AuthProvider } from "@/providers/AuthProvider";
 import BadRequest from "@/components/pages/BadRequest";
-import ProtectedRoute from "@/components/Routes/ProtectedRoute";
-import AdminRoute from "@/components/Routes/AdminRoute";
 
 const MainLayout: React.FC = () => {
   return (
