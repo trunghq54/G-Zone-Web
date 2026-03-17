@@ -6,7 +6,7 @@ import React, {
   useCallback,
   useMemo,
 } from "react";
-import { getUser, setUser, removeUser } from "@/lib/user";
+import { getUser, setUser, removeUser } from "@/lib/local-storage";
 import { loginApi } from "@/features/auth/api/auth-api";
 import {
   getAccountMe,
@@ -127,7 +127,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         throw error;
       }
     },
-    [navigate, refreshUser]
+    [navigate, refreshUser],
   );
 
   const isAuthenticated = user !== null;
@@ -141,7 +141,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       refreshUser,
       isAuthenticated,
     }),
-    [user, avatarUrl, login, logout, refreshUser, isAuthenticated]
+    [user, avatarUrl, login, logout, refreshUser, isAuthenticated],
   );
 
   if (loading) {

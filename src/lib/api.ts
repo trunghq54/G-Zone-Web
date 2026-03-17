@@ -1,6 +1,6 @@
 import axios from "axios";
 import { getToken } from "./token";
-import { getUser, setUser, removeUser } from "./user";
+import { getUser, setUser, removeUser } from "./local-storage";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -22,7 +22,7 @@ api.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 // Response interceptor to handle token refresh
@@ -47,17 +47,22 @@ api.interceptors.response.use(
             `${API_BASE_URL}/auth/refresh-token`,
             {
               refreshToken: token.refreshToken,
-            }
+            },
           );
           // Assuming the refresh token response gives new tokens
           const { accessToken, refreshToken } = response.data;
           const user = getUser();
           if (user) {
-            const newUser = { ...user, "access-token": accessToken, "refresh-token": refreshToken };
+            const newUser = {
+              ...user,
+              "access-token": accessToken,
+              "refresh-token": refreshToken,
+            };
             setUser(newUser);
           }
 
-          api.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+          api.defaults.headers.common["Authorization"] =
+            `Bearer ${accessToken}`;
           originalRequest.headers["Authorization"] = `Bearer ${accessToken}`;
           return api(originalRequest);
         } catch (refreshError) {
@@ -71,9 +76,7 @@ api.interceptors.response.use(
       }
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;
-
-

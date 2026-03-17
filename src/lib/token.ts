@@ -1,6 +1,9 @@
-import { getUser } from "./user";
+import { getUser } from "./local-storage";
 
-export const getToken = (): { accessToken: string; refreshToken: string } | null => {
+export const getToken = (): {
+  accessToken: string;
+  refreshToken: string;
+} | null => {
   const user = getUser();
   if (!user) {
     return null;
