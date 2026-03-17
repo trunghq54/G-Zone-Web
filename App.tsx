@@ -18,7 +18,7 @@ const MainLayout: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen font-display text-white bg-background-dark selection:bg-primary selection:text-white">
       <Header />
-      <main className="flex-grow flex flex-col">
+      <main className="grow flex flex-col">
         <Outlet />
       </main>
       <Footer />

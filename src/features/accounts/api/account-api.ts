@@ -1,4 +1,4 @@
-import api from "@/lib/api";
+import api from "@/lib/axios-api";
 
 export const getAccountMe = async () => {
   const response = await api.get("/accounts/me");

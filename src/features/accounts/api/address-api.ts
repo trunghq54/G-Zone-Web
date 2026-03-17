@@ -1,4 +1,4 @@
-import api from "@/lib/api";
+import api from "@/lib/axios-api";
 
 export interface UserAddress {
   "address-id": string;
@@ -24,7 +24,9 @@ export const getUserAddress = async (id: string): Promise<UserAddress> => {
   return response.data.data;
 };
 
-export const createUserAddress = async (addressData: Omit<UserAddress, "address-id" | "updated-at">) => {
+export const createUserAddress = async (
+  addressData: Omit<UserAddress, "address-id" | "updated-at">,
+) => {
   const response = await api.post("/user-addresses", addressData);
   return response.data;
 };

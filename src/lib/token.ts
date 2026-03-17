@@ -1,20 +1,28 @@
-import { getUser } from "./local-storage";
+import { getUser, removeUser, setUser } from './local-storage';
 
-export const getToken = (): {
-  accessToken: string;
-  refreshToken: string;
-} | null => {
+export const getAccessToken = (): string | null => {
+  const user = getUser();
+  return user ? user['access-token'] : null;
+};
+
+export const getRefreshToken = (): string | null => {
+  const user = getUser();
+  return user ? user['refresh-token'] : null;
+};
+
+export const setToken = (accessToken: string, refreshToken: string) => {
   const user = getUser();
   if (!user) {
-    return null;
+    return;
   }
+  const newUser = {
+    ...user,
+    'access-token': accessToken,
+    'refresh-token': refreshToken
+  };
+  setUser(newUser);
+};
 
-  const accessToken = user["access-token"];
-  const refreshToken = user["refresh-token"];
-
-  if (!accessToken || !refreshToken) {
-    return null;
-  }
-
-  return { accessToken, refreshToken };
+export const clearToken = () => {
+  removeUser();
 };
