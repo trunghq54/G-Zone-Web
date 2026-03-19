@@ -120,13 +120,7 @@ const Header: React.FC = () => {
                 </span>
               )}
             </Link>
-            {isAuthenticated ? (
-              <ProfileDropdown />
-            ) : (
-              <Link to="/login" className="flex size-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-white transition-colors hover:border-primary/40 hover:text-primary">
-                <span className="material-symbols-outlined text-[20px]">person</span>
-              </Link>
-            )}
+            {isAuthenticated && <ProfileDropdown />}
             {!isAuthenticated && (
               <Link to="/login" className="hidden rounded-full bg-primary px-4 py-2 text-xs font-black uppercase tracking-[0.2em] text-white transition-colors hover:bg-red-600 sm:inline-flex">
                 Sign In

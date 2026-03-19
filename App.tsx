@@ -7,7 +7,6 @@ import MissionLog from "@/features/missions/routes/MissionLog";
 import Support from "@/features/support/routes/Support";
 import Checkout from "./src/features/checkout/routes/Checkout";
 import Garage from "@/features/workshop/routes/Garage";
-import Dashboard from "@/features/dashboard/routes/Dashboard";
 import Login from "@/features/auth/routes/AuthPage";
 import ProductDetail from "./src/features/products/routes/ProductDetail";
 import Cart from "./src/features/cart/routes/Cart";
@@ -61,12 +60,10 @@ const App: React.FC = () => {
               <Route path="/cart" element={<Cart />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/profile/orders" element={<MyOrders />} />
-              {/* Keep this dashboard for customers */}
-              <Route path="/dashboard" element={<Dashboard />} />
             </Route>
 
-            {/* Admin Routes */}
-            <Route path="/admin" element={<AdminLayout />}>
+            {/* Management Routes */}
+            <Route path="/management" element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
               <Route path="categories" element={<AdminCategories />} />
               <Route path="products" element={<AdminProducts />} />
