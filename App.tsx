@@ -34,6 +34,7 @@ import AdminLayout from "@/components/Layout/Admin/AdminLayout";
 import AdminDashboard from "@/features/admin/routes/AdminDashboard";
 import AdminCategories from "@/features/admin/routes/AdminCategories";
 import AdminProducts from "@/features/admin/routes/AdminProducts";
+import AdminAccounts from "@/features/admin/routes/AdminAccounts";
 import AdminOrders from "./src/features/admin/routes/AdminOrders";
 import { ToastProvider } from "@/providers/ToastProvider";
 
@@ -65,6 +66,7 @@ const App: React.FC = () => {
             {/* Management Routes */}
             <Route path="/management" element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
+              <Route path="accounts" element={<AdminAccounts />} />
               <Route path="categories" element={<AdminCategories />} />
               <Route path="products" element={<AdminProducts />} />
               <Route path="orders" element={<AdminOrders />} />
