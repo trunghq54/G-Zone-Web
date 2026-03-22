@@ -1,6 +1,7 @@
 import React from "react";
 import { Outlet, Link, useLocation, Navigate } from "react-router-dom";
 import { useAuth } from "@/providers/AuthProvider";
+import logo from "@/assets/logo/logo-gzone.png";
 
 const NAVIGATION_ITEMS = [
   { name: "Dashboard", href: "/management", icon: "dashboard" },
@@ -35,17 +36,10 @@ const AdminLayout: React.FC = () => {
         {/* [A] Sidebar Header - Logo */}
         <div className="p-6 md:px-6 md:py-8 border-b border-surface-border">
           <Link to="/" className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-primary text-3xl">
-              local_fire_department
+            <img src={logo} alt="GZone" className="h-10" />
+            <span className="text-lg font-bold tracking-tighter uppercase">
+              GZone
             </span>
-            <div className="flex flex-col">
-              <span className="text-xl font-black italic tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400 uppercase">
-                G-ZONE
-              </span>
-              <span className="text-[10px] text-primary font-bold tracking-widest uppercase leading-none mt-0.5">
-                Admin Panel
-              </span>
-            </div>
           </Link>
         </div>
 

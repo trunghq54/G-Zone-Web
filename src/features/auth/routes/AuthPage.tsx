@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import ModernForm from "../components/ModernForm";
 import { useAuth } from "@/providers/AuthProvider";
 import { registerApi } from "../api/auth-api";
+import logo from "@/assets/logo/logo-gzone.png";
 
 const AuthPage: React.FC = () => {
   const { login } = useAuth();
@@ -23,9 +24,7 @@ const AuthPage: React.FC = () => {
   const handleRegister = async (name, email, password) => {
     try {
       await registerApi(name, email, password);
-      setSuccessMessage(
-        "Registration successful! Please sign in to continue."
-      );
+      setSuccessMessage("Registration successful! Please sign in to continue.");
       setError(null);
     } catch (err) {
       setError("Registration failed. Please try again.");
@@ -42,14 +41,10 @@ const AuthPage: React.FC = () => {
           to="/"
           className="flex items-center gap-2 text-white group hover:text-primary transition-colors"
         >
-          <div className="size-6 text-primary group-hover:rotate-180 transition-transform duration-500">
-            <span className="material-symbols-outlined !text-[24px]">
-              sports_motorsports
-            </span>
-          </div>
-          <h2 className="text-white text-xl font-bold leading-tight tracking-[-0.015em] uppercase">
-            MotoGear
-          </h2>
+          <img src={logo} alt="GZone" className="h-8" />
+          <span className="text-lg font-bold tracking-tighter uppercase">
+            GZone
+          </span>
         </Link>
       </header>
 
@@ -73,7 +68,7 @@ const AuthPage: React.FC = () => {
       </main>
 
       <footer className="border-t border-[#4b2020] bg-[#240f0f] py-6 text-center text-sm text-gray-500">
-        <p>© 2026 MotoGear. All rights reserved.</p>
+        <p>© 2026 GZone. All rights reserved.</p>
       </footer>
     </div>
   );
