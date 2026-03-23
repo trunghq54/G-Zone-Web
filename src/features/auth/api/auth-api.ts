@@ -14,10 +14,10 @@ export const loginApi = async (email, password) => {
   return response.data.data;
 };
 
-export const registerApi = async (userName, email, password) => {
+export const registerApi = async (username, email, password) => {
   const response = await publicApi.post(
     "/auths/register",
-    { userName, email, password },
+    { "user-name": username, email, password },
     {
       headers: {
         "Content-Type": "application/json",
