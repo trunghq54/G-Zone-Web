@@ -4,7 +4,11 @@ import {
   Account,
   AccountQuery,
   PaginatedAccounts,
+  updateAccount,
+  UpdateAccountRequest,
 } from "../api/account-api";
+import { registerApi } from "../../auth/api/auth-api";
+import AccountModal from "../components/AccountModal";
 import { AxiosError } from "axios";
 import { format, formatDistanceToNow, parseISO } from "date-fns";
 
@@ -36,6 +40,10 @@ const AdminAccounts: React.FC = () => {
   // State for data displayed in table (filtered and paginated)
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [lastSync, setLastSync] = useState<Date | null>(null);
+
+  // Modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
 
   const [pagination, setPagination] = useState<
     Omit<PaginatedAccounts, "data-list">
@@ -146,6 +154,27 @@ const AdminAccounts: React.FC = () => {
     }));
   }, [allAccounts, query, pagination["page-index"], pagination["page-size"]]);
 
+  // Modal Handlers
+  const handleOpenModal = (account: Account | null = null) => {
+    setSelectedAccount(account);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedAccount(null);
+  };
+
+  const handleSave = async (data: UpdateAccountRequest) => {
+    await updateAccount(data);
+    await syncData(); // Resync data
+  };
+
+  const handleCreate = async (data: any) => {
+    await registerApi(data.username, data.email, data.password);
+    await syncData(); // Resync data
+  };
+
   // Handler phân trang
   const handlePageChange = (newPage: number) => {
     if (newPage > 0 && newPage <= pagination["total-page"]) {
@@ -216,6 +245,13 @@ const AdminAccounts: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-6 h-full relative">
+      <AccountModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onSave={handleSave}
+        onCreate={handleCreate}
+        initialData={selectedAccount}
+      />
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-black italic uppercase tracking-tighter text-white mb-1">
@@ -224,7 +260,10 @@ const AdminAccounts: React.FC = () => {
           <p className="text-text-muted">Manage user and staff accounts.</p>
         </div>
         <div className="flex items-center gap-4">
-          <button className="bg-primary hover:bg-red-600 text-white px-6 py-2 rounded font-bold uppercase tracking-wider transition-colors flex items-center gap-2">
+          <button
+            onClick={() => handleOpenModal()}
+            className="bg-primary hover:bg-red-600 text-white px-6 py-2 rounded font-bold uppercase tracking-wider transition-colors flex items-center gap-2"
+          >
             <span className="material-symbols-outlined">add</span>
             New Account
           </button>
@@ -268,7 +307,7 @@ const AdminAccounts: React.FC = () => {
             <option value="">All Roles</option>
             <option value="Admin">Admin</option>
             <option value="Staff">Staff</option>
-            <option value="Member">Member</option>
+            <option value="Customer">Customer</option>
           </select>
           <select
             name="status"
@@ -277,8 +316,8 @@ const AdminAccounts: React.FC = () => {
           >
             <option value="">All Status</option>
             <option value="Normal">Normal</option>
-            <option value="Deleting">Deleting</option>
-            <option value="Deleted">Deleted</option>
+            <option value="Suspend">Suspend</option>
+            <option value="Abandoned">Abandoned</option>
             <option value="Spam">Spam</option>
             <option value="Banned">Banned</option>
           </select>
@@ -388,9 +427,9 @@ const AdminAccounts: React.FC = () => {
                               ? "bg-blue-500/10 text-green-500"
                               : account.status === "Banned"
                                 ? "bg-red-500/10 text-red-500"
-                                : account.status === "Deleting"
+                                : account.status === "Suspend"
                                   ? "bg-orange-500/10 text-yellow-500"
-                                  : account.status === "Deleted"
+                                  : account.status === "Abandoned"
                                     ? "bg-gray-500/10 text-red-500"
                                     : account.status === "Spam"
                                       ? "bg-gray-500/10 text-gray-400"
@@ -412,7 +451,10 @@ const AdminAccounts: React.FC = () => {
                       </td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex items-center justify-end gap-2">
-                          <button className="w-8 h-8 rounded bg-blue-500/10 text-blue-500 hover:bg-blue-500 hover:text-white transition-colors flex items-center justify-center">
+                          <button
+                            onClick={() => handleOpenModal(account)}
+                            className="w-8 h-8 rounded bg-blue-500/10 text-blue-500 hover:bg-blue-500 hover:text-white transition-colors flex items-center justify-center"
+                          >
                             <span className="material-symbols-outlined text-[18px]">
                               edit
                             </span>
