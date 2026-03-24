@@ -9,6 +9,7 @@ import {
   removeCartItem,
   updateCartItemQuantity,
 } from '@/lib/cart';
+import { syncCartFromServer } from '@/features/accounts/api/cart-api';
 
 const Cart: React.FC = () => {
   const [items, setItems] = useState<CartItem[]>([]);
@@ -16,6 +17,7 @@ const Cart: React.FC = () => {
   useEffect(() => {
     const load = () => setItems(getCart());
     load();
+    syncCartFromServer().then(load);
     window.addEventListener('cart:updated', load);
     return () => window.removeEventListener('cart:updated', load);
   }, []);
