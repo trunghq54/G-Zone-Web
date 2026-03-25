@@ -82,9 +82,7 @@ export interface UpdateAccountRoleRequest {
   role: string;
 }
 
-export const updateAccountRole = async (
-  payload: UpdateAccountRoleRequest,
-) => {
+export const updateAccountRole = async (payload: UpdateAccountRoleRequest) => {
   const { data } = await api.patch(`${API_URL}/role`, payload);
   return data;
 };
@@ -97,6 +95,6 @@ export interface UpdateAccountPasswordRequest {
 export const updateAccountPassword = async (
   payload: UpdateAccountPasswordRequest,
 ) => {
-  const { data } = await api.patch(`${API_URL}/password`, payload);
+  const { data } = await api.patch("/auths/password", payload);
   return data;
 };

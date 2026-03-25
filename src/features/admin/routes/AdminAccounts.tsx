@@ -6,10 +6,14 @@ import {
   PaginatedAccounts,
   updateAccount,
   UpdateAccountRequest,
+  updateAccountRole,
+  UpdateAccountRoleRequest,
+  updateAccountPassword,
+  UpdateAccountPasswordRequest,
 } from "../api/account-api";
 import { registerApi } from "../../auth/api/auth-api";
 import AccountModal from "../components/AccountModal";
-import { AxiosError } from "axios";
+import ActionMenu from "../components/ActionMenu";
 import { format, formatDistanceToNow, parseISO } from "date-fns";
 
 const CACHE_KEY = "admin_accounts_cache";
@@ -44,6 +48,9 @@ const AdminAccounts: React.FC = () => {
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
+  const [modalMode, setModalMode] = useState<
+    "create" | "edit" | "changeRole" | "changePassword"
+  >("create");
 
   const [pagination, setPagination] = useState<
     Omit<PaginatedAccounts, "data-list">
@@ -155,7 +162,11 @@ const AdminAccounts: React.FC = () => {
   }, [allAccounts, query, pagination["page-index"], pagination["page-size"]]);
 
   // Modal Handlers
-  const handleOpenModal = (account: Account | null = null) => {
+  const handleOpenModal = (
+    account: Account | null = null,
+    mode: "create" | "edit" | "changeRole" | "changePassword" = "create",
+  ) => {
+    setModalMode(mode);
     setSelectedAccount(account);
     setIsModalOpen(true);
   };
@@ -173,6 +184,16 @@ const AdminAccounts: React.FC = () => {
   const handleCreate = async (data: any) => {
     await registerApi(data.username, data.email, data.password);
     await syncData(); // Resync data
+  };
+
+  const handleSaveRole = async (data: UpdateAccountRoleRequest) => {
+    await updateAccountRole(data);
+    await syncData();
+  };
+
+  const handleSavePassword = async (data: UpdateAccountPasswordRequest) => {
+    await updateAccountPassword(data);
+    await syncData();
   };
 
   // Handler phân trang
@@ -243,6 +264,30 @@ const AdminAccounts: React.FC = () => {
     return pages;
   };
 
+  const getActions = (account: Account) => [
+    {
+      label: "Edit",
+      icon: "edit",
+      onClick: () => handleOpenModal(account, "edit"),
+    },
+    {
+      label: "Change Role",
+      icon: "manage_accounts",
+      onClick: () => handleOpenModal(account, "changeRole"),
+    },
+    {
+      label: "Change Password",
+      icon: "lock_reset",
+      onClick: () => handleOpenModal(account, "changePassword"),
+    },
+    {
+      label: "Delete",
+      icon: "delete",
+      onClick: () => handleDelete(account.id),
+      className: "text-red-500",
+    },
+  ];
+
   return (
     <div className="flex flex-col gap-6 h-full relative">
       <AccountModal
@@ -250,7 +295,10 @@ const AdminAccounts: React.FC = () => {
         onClose={handleCloseModal}
         onSave={handleSave}
         onCreate={handleCreate}
+        onSaveRole={handleSaveRole}
+        onSavePassword={handleSavePassword}
         initialData={selectedAccount}
+        mode={modalMode}
       />
       <div className="flex justify-between items-center">
         <div>
@@ -261,7 +309,7 @@ const AdminAccounts: React.FC = () => {
         </div>
         <div className="flex items-center gap-4">
           <button
-            onClick={() => handleOpenModal()}
+            onClick={() => handleOpenModal(null, "create")}
             className="bg-primary hover:bg-red-600 text-white px-6 py-2 rounded font-bold uppercase tracking-wider transition-colors flex items-center gap-2"
           >
             <span className="material-symbols-outlined">add</span>
@@ -450,24 +498,7 @@ const AdminAccounts: React.FC = () => {
                         {format(parseISO(account["created-at"]), "dd/MM/yyyy")}
                       </td>
                       <td className="px-6 py-4 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <button
-                            onClick={() => handleOpenModal(account)}
-                            className="w-8 h-8 rounded bg-blue-500/10 text-blue-500 hover:bg-blue-500 hover:text-white transition-colors flex items-center justify-center"
-                          >
-                            <span className="material-symbols-outlined text-[18px]">
-                              edit
-                            </span>
-                          </button>
-                          <button
-                            onClick={() => handleDelete(account.id)}
-                            className="w-8 h-8 rounded bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-colors flex items-center justify-center"
-                          >
-                            <span className="material-symbols-outlined text-[18px]">
-                              delete
-                            </span>
-                          </button>
-                        </div>
+                        <ActionMenu actions={getActions(account)} />
                       </td>
                     </tr>
                   ))
