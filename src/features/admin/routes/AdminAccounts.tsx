@@ -408,7 +408,7 @@ const AdminAccounts: React.FC = () => {
           {error}
         </div>
       ) : (
-        <div className="bg-surface-dark border border-surface-border rounded-xl flex-1 overflow-hidden flex flex-col">
+        <div className="bg-surface-dark border border-surface-border rounded-xl flex-1 flex flex-col">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
