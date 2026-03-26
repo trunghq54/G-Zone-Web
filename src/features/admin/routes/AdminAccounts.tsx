@@ -10,7 +10,7 @@ import {
   updateAccountRole,
   UpdateAccountRoleRequest,
   updateAccountPassword,
-  UpdateAccountPasswordRequest,
+  ResetAccountPasswordRequest,
 } from "../api/account-api";
 import { registerApi } from "../../auth/api/auth-api";
 import AccountModal from "../components/AccountModal";
@@ -263,8 +263,9 @@ const AdminAccounts: React.FC = () => {
       const updatedAccounts = allAccounts.filter((acc) => acc.id !== id);
       setAllAccounts(updatedAccounts);
       setCache(updatedAccounts);
+      showToast("Account deleted successfully", "success");
     } catch (err: any) {
-      alert("Failed to delete account. Rolling back changes.");
+      showToast("Failed to delete account", "error");
       console.error(err);
       syncData();
     }

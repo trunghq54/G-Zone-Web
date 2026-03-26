@@ -28,18 +28,24 @@ const AccountModal: React.FC<AccountModalProps> = ({
   onSavePassword,
   initialData,
 }) => {
-  const [formData, setFormData] = useState({
-    email: "",
+  const [createData, setCreateData] = useState({
     username: "",
+    email: "",
     password: "",
-    confirmPassword: "",
+  });
+
+  const [editData, setEditData] = useState({
+    email: "",
     phone: "",
     "full-name": "",
-    role: "Customer",
     status: "Normal",
     "is-active": true,
     "date-of-birth": "",
     gender: "Other",
+  });
+
+  const [roleData, setRoleData] = useState({
+    role: "Customer",
   });
 
   const [passwordData, setPasswordData] = useState({
@@ -51,38 +57,34 @@ const AccountModal: React.FC<AccountModalProps> = ({
   const { showToast } = useToast();
 
   useEffect(() => {
-    if (isOpen) {
-      const resetState = {
+    if (!isOpen) return;
+
+    if (mode === "create") {
+      setCreateData({ username: "", email: "", password: "" });
+    }
+
+    if (mode === "edit") {
+      setEditData({
         email: initialData?.email || "",
-        username: initialData?.username || "",
-        password: "",
-        confirmPassword: "",
         phone: initialData?.phone || "",
         "full-name": initialData?.["full-name"] || "",
-        role: initialData?.role || "Customer",
         status: initialData?.status || "Normal",
         "is-active": initialData?.["is-active"] ?? true,
         "date-of-birth": initialData?.["date-of-birth"]
           ? new Date(initialData["date-of-birth"]).toISOString().split("T")[0]
           : "",
         gender: initialData?.gender || "Other",
-      };
-      if (!initialData) {
-        // Reset for create mode
-        resetState.email = "";
-        resetState.username = "";
-        resetState.phone = "";
-        resetState["full-name"] = "";
-        resetState.role = "Customer";
-        resetState.status = "Normal";
-        resetState["is-active"] = true;
-        resetState["date-of-birth"] = "";
-        resetState.gender = "Other";
-      }
-      setFormData(resetState);
+      });
+    }
+
+    if (mode === "changeRole") {
+      setRoleData({ role: initialData?.role || "Customer" });
+    }
+
+    if (mode === "changePassword") {
       setPasswordData({ password: "", confirmPassword: "" });
     }
-  }, [initialData, isOpen]);
+  }, [initialData, isOpen, mode]);
 
   if (!isOpen) return null;
 
@@ -92,13 +94,34 @@ const AccountModal: React.FC<AccountModalProps> = ({
     >,
   ) => {
     const { name, value, type } = e.target;
-    if (name === "password" || name === "confirmPassword") {
-      setPasswordData((prev) => ({ ...prev, [name]: value }));
-    } else if (type === "checkbox") {
-      const checked = (e.target as HTMLInputElement).checked;
-      setFormData((prev) => ({ ...prev, [name]: checked }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (mode === "changePassword") {
+      if (name === "password" || name === "confirmPassword") {
+        setPasswordData((prev) => ({ ...prev, [name]: value }));
+      }
+      return;
+    }
+
+    if (mode === "create") {
+      if (name === "username" || name === "email" || name === "password") {
+        setCreateData((prev) => ({ ...prev, [name]: value }));
+      }
+      return;
+    }
+
+    if (mode === "edit") {
+      if (type === "checkbox") {
+        const checked = (e.target as HTMLInputElement).checked;
+        setEditData((prev) => ({ ...prev, [name]: checked }));
+      } else {
+        setEditData((prev) => ({ ...prev, [name]: value }));
+      }
+      return;
+    }
+
+    if (mode === "changeRole") {
+      setRoleData((prev) => ({ ...prev, [name]: value }));
+      return;
     }
   };
 
@@ -114,28 +137,28 @@ const AccountModal: React.FC<AccountModalProps> = ({
           if (!initialData) break;
           const payload: UpdateAccountRequest = {
             id: initialData.id,
-            email: formData.email,
-            phone: formData.phone,
-            "full-name": formData["full-name"],
-            status: formData.status,
-            "is-active": formData["is-active"],
-            "date-of-birth": formData["date-of-birth"]
-              ? new Date(formData["date-of-birth"]).toISOString()
+            email: editData.email,
+            phone: editData.phone,
+            "full-name": editData["full-name"],
+            status: editData.status,
+            "is-active": editData["is-active"],
+            "date-of-birth": editData["date-of-birth"]
+              ? new Date(editData["date-of-birth"]).toISOString()
               : undefined,
-            gender: formData.gender,
+            gender: editData.gender,
           };
           await onSave(payload);
           break;
         case "create":
           await onCreate({
-            username: formData.username,
-            email: formData.email,
-            password: formData.password,
+            username: createData.username,
+            email: createData.email,
+            password: createData.password,
           });
           break;
         case "changeRole":
           if (!initialData) break;
-          await onSaveRole({ id: initialData.id, role: formData.role });
+          await onSaveRole({ id: initialData.id, role: roleData.role });
           break;
         case "changePassword":
           if (!initialData) break;
@@ -204,7 +227,7 @@ const AccountModal: React.FC<AccountModalProps> = ({
               <input
                 type="text"
                 name="username"
-                value={formData.username}
+                value={createData.username}
                 onChange={handleChange}
                 required
                 className="w-full bg-[#2a1212] border border-surface-border rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors"
@@ -217,7 +240,7 @@ const AccountModal: React.FC<AccountModalProps> = ({
               <input
                 type="email"
                 name="email"
-                value={formData.email}
+                value={createData.email}
                 onChange={handleChange}
                 required
                 className="w-full bg-[#2a1212] border border-surface-border rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors"
@@ -230,7 +253,7 @@ const AccountModal: React.FC<AccountModalProps> = ({
               <input
                 type="password"
                 name="password"
-                value={formData.password}
+                value={createData.password}
                 onChange={handleChange}
                 required
                 className="w-full bg-[#2a1212] border border-surface-border rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors"
@@ -248,7 +271,7 @@ const AccountModal: React.FC<AccountModalProps> = ({
               <input
                 type="email"
                 name="email"
-                value={formData.email}
+                value={editData.email}
                 onChange={handleChange}
                 required
                 className="w-full bg-[#2a1212] border border-surface-border rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors"
@@ -261,7 +284,7 @@ const AccountModal: React.FC<AccountModalProps> = ({
               <input
                 type="text"
                 name="full-name"
-                value={formData["full-name"]}
+                value={editData["full-name"]}
                 onChange={handleChange}
                 className="w-full bg-[#2a1212] border border-surface-border rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors"
               />
@@ -273,7 +296,7 @@ const AccountModal: React.FC<AccountModalProps> = ({
               <input
                 type="text"
                 name="phone"
-                value={formData.phone}
+                value={editData.phone}
                 onChange={handleChange}
                 className="w-full bg-[#2a1212] border border-surface-border rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors"
               />
@@ -286,7 +309,7 @@ const AccountModal: React.FC<AccountModalProps> = ({
                 <input
                   type="date"
                   name="date-of-birth"
-                  value={formData["date-of-birth"]}
+                  value={editData["date-of-birth"]}
                   onChange={handleChange}
                   className="w-full bg-[#2a1212] border border-surface-border rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors"
                 />
@@ -297,7 +320,7 @@ const AccountModal: React.FC<AccountModalProps> = ({
                 </label>
                 <select
                   name="gender"
-                  value={formData.gender}
+                  value={editData.gender}
                   onChange={handleChange}
                   className="w-full bg-[#2a1212] border border-surface-border rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors"
                 >
@@ -313,7 +336,7 @@ const AccountModal: React.FC<AccountModalProps> = ({
               </label>
               <select
                 name="status"
-                value={formData.status}
+                value={editData.status}
                 onChange={handleChange}
                 className="w-full bg-[#2a1212] border border-surface-border rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors"
               >
@@ -329,7 +352,7 @@ const AccountModal: React.FC<AccountModalProps> = ({
                 <input
                   type="checkbox"
                   name="is-active"
-                  checked={formData["is-active"]}
+                  checked={editData["is-active"]}
                   onChange={handleChange}
                   className="w-4 h-4 accent-primary"
                 />
@@ -348,7 +371,7 @@ const AccountModal: React.FC<AccountModalProps> = ({
             </label>
             <select
               name="role"
-              value={formData.role}
+              value={roleData.role}
               onChange={handleChange}
               className="w-full bg-[#2a1212] border border-surface-border rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors"
             >
