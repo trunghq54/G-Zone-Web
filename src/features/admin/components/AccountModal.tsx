@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useToast } from "@/providers/ToastProvider";
 import {
   Account,
   UpdateAccountRequest,
@@ -41,7 +42,13 @@ const AccountModal: React.FC<AccountModalProps> = ({
     gender: "Other",
   });
 
+  const [passwordData, setPasswordData] = useState({
+    password: "",
+    confirmPassword: "",
+  });
+
   const [loading, setLoading] = useState(false);
+  const { showToast } = useToast();
 
   useEffect(() => {
     if (isOpen) {
@@ -73,6 +80,7 @@ const AccountModal: React.FC<AccountModalProps> = ({
         resetState.gender = "Other";
       }
       setFormData(resetState);
+      setPasswordData({ password: "", confirmPassword: "" });
     }
   }, [initialData, isOpen]);
 
@@ -84,7 +92,9 @@ const AccountModal: React.FC<AccountModalProps> = ({
     >,
   ) => {
     const { name, value, type } = e.target;
-    if (type === "checkbox") {
+    if (name === "password" || name === "confirmPassword") {
+      setPasswordData((prev) => ({ ...prev, [name]: value }));
+    } else if (type === "checkbox") {
       const checked = (e.target as HTMLInputElement).checked;
       setFormData((prev) => ({ ...prev, [name]: checked }));
     } else {
@@ -129,14 +139,14 @@ const AccountModal: React.FC<AccountModalProps> = ({
           break;
         case "changePassword":
           if (!initialData) break;
-          if (formData.password !== formData.confirmPassword) {
+          if (passwordData.password !== passwordData.confirmPassword) {
             alert("Passwords do not match!");
             setLoading(false);
             return;
           }
           await onSavePassword({
             id: initialData.id,
-            password: formData.password,
+            "new-password": passwordData.password,
           });
           break;
       }
@@ -163,7 +173,7 @@ const AccountModal: React.FC<AccountModalProps> = ({
         }
       }
 
-      alert(errorMessage);
+      showToast(errorMessage, "error");
     } finally {
       setLoading(false);
     }
@@ -358,7 +368,7 @@ const AccountModal: React.FC<AccountModalProps> = ({
               <input
                 type="password"
                 name="password"
-                value={formData.password}
+                value={passwordData.password}
                 onChange={handleChange}
                 required
                 className="w-full bg-[#2a1212] border border-surface-border rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors"
@@ -371,7 +381,7 @@ const AccountModal: React.FC<AccountModalProps> = ({
               <input
                 type="password"
                 name="confirmPassword"
-                value={formData.confirmPassword}
+                value={passwordData.confirmPassword}
                 onChange={handleChange}
                 required
                 className="w-full bg-[#2a1212] border border-surface-border rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors"

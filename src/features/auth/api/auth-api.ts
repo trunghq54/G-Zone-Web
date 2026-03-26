@@ -1,4 +1,4 @@
-import { publicApi } from "@/lib/axios-api";
+import api, { publicApi } from "@/lib/axios-api";
 
 export const loginApi = async (email, password) => {
   const response = await publicApi.post(
@@ -34,4 +34,14 @@ export const refreshToken = async (tokenData: {
 }) => {
   const response = await publicApi.post("/auths/refresh-token", tokenData);
   return response.data.data;
+};
+
+export interface ResetPasswordRequest {
+  id: string;
+  "new-password": string;
+}
+
+export const resetPasswordApi = async (payload: ResetPasswordRequest) => {
+  const { data } = await api.patch("/auths/re-pasword", payload);
+  return data;
 };

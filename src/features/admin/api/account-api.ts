@@ -87,14 +87,17 @@ export const updateAccountRole = async (payload: UpdateAccountRoleRequest) => {
   return data;
 };
 
-export interface UpdateAccountPasswordRequest {
+export interface ResetAccountPasswordRequest {
   id: string;
-  password?: string;
+  "new-password": string;
 }
 
 export const updateAccountPassword = async (
-  payload: UpdateAccountPasswordRequest,
+  payload: ResetAccountPasswordRequest,
 ) => {
-  const { data } = await api.patch("/auths/password", payload);
+  const { data } = await api.patch("/auths/re-password", {
+    id: payload.id,
+    "new-password": payload["new-password"],
+  });
   return data;
 };

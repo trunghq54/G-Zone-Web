@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useToast } from "@/providers/ToastProvider";
 import {
   getAccounts,
   Account,
@@ -63,6 +64,7 @@ const AdminAccounts: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState<AccountQuery>({});
+  const { showToast } = useToast();
 
   // Function to fetch all data from server and update cache
   const syncData = async () => {
@@ -177,23 +179,47 @@ const AdminAccounts: React.FC = () => {
   };
 
   const handleSave = async (data: UpdateAccountRequest) => {
-    await updateAccount(data);
-    await syncData(); // Resync data
+    try {
+      await updateAccount(data);
+      await syncData(); // Resync data
+      showToast("Account updated successfully", "success");
+    } catch (err) {
+      showToast("Failed to update account", "error");
+      throw err;
+    }
   };
 
   const handleCreate = async (data: any) => {
-    await registerApi(data.username, data.email, data.password);
-    await syncData(); // Resync data
+    try {
+      await registerApi(data.username, data.email, data.password);
+      await syncData(); // Resync data
+      showToast("Account created successfully", "success");
+    } catch (err) {
+      showToast("Failed to create account", "error");
+      throw err;
+    }
   };
 
   const handleSaveRole = async (data: UpdateAccountRoleRequest) => {
-    await updateAccountRole(data);
-    await syncData();
+    try {
+      await updateAccountRole(data);
+      await syncData();
+      showToast("Role changed successfully", "success");
+    } catch (err) {
+      showToast("Failed to change role", "error");
+      throw err;
+    }
   };
 
   const handleSavePassword = async (data: UpdateAccountPasswordRequest) => {
-    await updateAccountPassword(data);
-    await syncData();
+    try {
+      await updateAccountPassword(data);
+      await syncData();
+      showToast("Password reset successfully", "success");
+    } catch (err) {
+      showToast("Failed to reset password", "error");
+      throw err;
+    }
   };
 
   // Handler phân trang
@@ -276,7 +302,7 @@ const AdminAccounts: React.FC = () => {
       onClick: () => handleOpenModal(account, "changeRole"),
     },
     {
-      label: "Change Password",
+      label: "Reset Password",
       icon: "lock_reset",
       onClick: () => handleOpenModal(account, "changePassword"),
     },
