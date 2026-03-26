@@ -1,22 +1,23 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import ModernForm from "../components/ModernForm";
 import { useAuth } from "@/providers/AuthProvider";
+import { useToast } from "@/providers/ToastProvider";
 import { registerApi } from "../api/auth-api";
 import logo from "@/assets/logo/logo-gzone.png";
 
 const AuthPage: React.FC = () => {
   const { login } = useAuth();
-  const navigate = useNavigate();
-  const [error, setError] = useState<string | null>(null);
+  const { showToast } = useToast();
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const handleLogin = async (email, password) => {
     try {
       await login(email, password);
+      showToast("Login successful", "success");
     } catch (err) {
-      setError("Invalid email or password. Please try again.");
       setSuccessMessage(null);
+      showToast("Login failed. Invalid email or password.", "error");
       console.error("Login failed:", err);
     }
   };
@@ -25,10 +26,10 @@ const AuthPage: React.FC = () => {
     try {
       await registerApi(name, email, password);
       setSuccessMessage("Registration successful! Please sign in to continue.");
-      setError(null);
+      showToast("Registration successful! Please sign in.", "success");
     } catch (err) {
-      setError("Registration failed. Please try again.");
       setSuccessMessage(null);
+      showToast("Registration failed. Please try again.", "error");
       console.error("Registration failed:", err);
     }
   };
@@ -36,7 +37,7 @@ const AuthPage: React.FC = () => {
   return (
     <div className="bg-background-dark min-h-screen flex flex-col relative overflow-hidden text-white">
       {/* Navbar Minimal */}
-      <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between whitespace-nowrap border-b border-[#4b2020] bg-[#240f0f]/90 backdrop-blur-md px-6 lg:px-10 py-3">
+      <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between whitespace-nowrap border-b border-surface-border bg-[#240f0f]/90 backdrop-blur-md px-6 lg:px-10 py-3">
         <Link
           to="/"
           className="flex items-center gap-2 text-white group hover:text-primary transition-colors"
@@ -49,7 +50,7 @@ const AuthPage: React.FC = () => {
       </header>
 
       {/* Main Content */}
-      <main className="flex-grow relative flex items-center justify-center min-h-screen pt-16 pb-12 px-4 sm:px-6">
+      <main className="grow relative flex items-center justify-center min-h-screen pt-16 pb-12 px-4 sm:px-6">
         <div
           className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat bg-fixed"
           style={{
@@ -60,14 +61,13 @@ const AuthPage: React.FC = () => {
 
         <div className="relative z-10">
           <ModernForm onLogin={handleLogin} onRegister={handleRegister} />
-          {error && <p className="text-red-500 text-center mt-4">{error}</p>}
           {successMessage && (
             <p className="text-green-500 text-center mt-4">{successMessage}</p>
           )}
         </div>
       </main>
 
-      <footer className="border-t border-[#4b2020] bg-[#240f0f] py-6 text-center text-sm text-gray-500">
+      <footer className="border-t border-surface-border bg-[#240f0f] py-6 text-center text-sm text-gray-500">
         <p>© 2026 GZone. All rights reserved.</p>
       </footer>
     </div>

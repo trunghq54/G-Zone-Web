@@ -10,7 +10,9 @@ import {
   updateAccountRole,
   UpdateAccountRoleRequest,
   updateAccountPassword,
-  ResetAccountPasswordRequest,  deleteAccount,} from "../api/account-api";
+  ResetAccountPasswordRequest,
+  deleteAccount,
+} from "../api/account-api";
 import { registerApi } from "../../auth/api/auth-api";
 import AccountModal from "../components/AccountModal";
 import ActionMenu from "../components/ActionMenu";
@@ -210,7 +212,7 @@ const AdminAccounts: React.FC = () => {
     }
   };
 
-  const handleSavePassword = async (data: UpdateAccountPasswordRequest) => {
+  const handleSavePassword = async (data: ResetAccountPasswordRequest) => {
     try {
       await updateAccountPassword(data);
       await syncData();
@@ -486,7 +488,7 @@ const AdminAccounts: React.FC = () => {
                         {account.username}
                       </td>
                       <td
-                        className="px-6 py-4 text-text-muted max-w-[13rem] truncate"
+                        className="px-6 py-4 text-text-muted max-w-52 truncate"
                         title={account["full-name"] || ""}
                       >
                         {account["full-name"] || "N/A"}
