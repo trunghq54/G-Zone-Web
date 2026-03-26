@@ -87,6 +87,11 @@ export const updateAccountRole = async (payload: UpdateAccountRoleRequest) => {
   return data;
 };
 
+export const deleteAccount = async (id: string) => {
+  const { data } = await api.delete(`${API_URL}/${id}`);
+  return data;
+};
+
 export interface ResetAccountPasswordRequest {
   id: string;
   "new-password": string;

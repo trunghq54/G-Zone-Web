@@ -10,8 +10,7 @@ import {
   updateAccountRole,
   UpdateAccountRoleRequest,
   updateAccountPassword,
-  ResetAccountPasswordRequest,
-} from "../api/account-api";
+  ResetAccountPasswordRequest,  deleteAccount,} from "../api/account-api";
 import { registerApi } from "../../auth/api/auth-api";
 import AccountModal from "../components/AccountModal";
 import ActionMenu from "../components/ActionMenu";
@@ -255,11 +254,17 @@ const AdminAccounts: React.FC = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm("Are you sure you want to delete this account?"))
+    if (!window.confirm("Are you sure you want to delete this account?")) {
       return;
+    }
+
     try {
-      console.log("delete action for", id);
-      // await deleteAccount(id);
+      const response = await deleteAccount(id);
+
+      if (!response || response.data !== true) {
+        throw new Error("Account deletion failed from server");
+      }
+
       const updatedAccounts = allAccounts.filter((acc) => acc.id !== id);
       setAllAccounts(updatedAccounts);
       setCache(updatedAccounts);
@@ -267,7 +272,7 @@ const AdminAccounts: React.FC = () => {
     } catch (err: any) {
       showToast("Failed to delete account", "error");
       console.error(err);
-      syncData();
+      await syncData();
     }
   };
 
