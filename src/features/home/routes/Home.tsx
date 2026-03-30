@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-const highPerformanceRedSportMotorcycle = "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=500&h=300&fit=crop";
-const helmet = "https://images.unsplash.com/photo-1557008075-7f2c5efa4cfd?w=200&h=200&fit=crop";
-const jacket = "https://images.unsplash.com/photo-1520975661595-6453be3f7070?w=200&h=200&fit=crop";
-const gloves = "https://images.unsplash.com/photo-1588698188562-b1fd07c2c99a?w=200&h=200&fit=crop";
+import { APP_IMAGES } from "@/constants/images";
 import { Product, getProducts } from "@/features/admin/api/product-api";
 import { addToCart } from "@/lib/cart";
 import { useToast } from "@/providers/ToastProvider";
@@ -18,21 +15,21 @@ const Home: React.FC = () => {
       subtitle: "Protection",
       description:
         "DOT & SNELL certified options for daily road and touring use.",
-      image: helmet,
+      image: APP_IMAGES.home.helmet,
       span: "md:col-span-2 md:row-span-2",
     },
     {
       title: "Jackets",
       subtitle: "Weather Ready",
       description: "Layered outerwear for urban riding and longer routes.",
-      image: jacket,
+      image: APP_IMAGES.home.jacket,
       span: "",
     },
     {
       title: "Gloves",
       subtitle: "Grip Control",
       description: "Short cuff and gauntlet gloves with impact protection.",
-      image: gloves,
+      image: APP_IMAGES.home.gloves,
       span: "",
     },
   ];
@@ -74,7 +71,7 @@ const Home: React.FC = () => {
               <img
                 alt="High performance red sport motorcycle"
                 className="h-full w-full object-cover object-center opacity-80"
-                src={highPerformanceRedSportMotorcycle}
+                src={APP_IMAGES.home.heroMotorcycle}
               />
             </div>
             <div className="relative z-20 flex h-full flex-col justify-between px-6 py-7 md:px-10 md:py-10">
