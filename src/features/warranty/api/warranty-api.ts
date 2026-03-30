@@ -47,7 +47,7 @@ export const warrantyApi = {
     if (params) {
       if (params.pageNumber !== undefined) queryParams.pageNumber = params.pageNumber;
       if (params.pageSize !== undefined) queryParams.pageSize = params.pageSize;
-      if (params.customerId !== undefined) queryParams["customer-id"] = params.customerId;
+      if (params.customerId !== undefined) queryParams.customerId = params.customerId;
     }
     const response = await api.get('/warranty-claims', { params: queryParams });
     const payload = response.data?.data;

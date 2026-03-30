@@ -88,10 +88,22 @@ const WarrantyPage: React.FC = () => {
                     <p className="text-sm text-white/80">{claim.issueDescription}</p>
                   </div>
 
-                  {claim.resolutionNotes && (
+                  {claim.resolutionNotes ? (
                     <div className="mt-4 p-3 rounded-lg bg-white/5 border border-white/10">
                       <h4 className="text-xs uppercase tracking-wider text-primary mb-1">Response from Service Center</h4>
                       <p className="text-sm text-white/80">{claim.resolutionNotes}</p>
+                    </div>
+                  ) : (
+                    <div className="mt-4 p-3 rounded-lg bg-white/5 border border-white/10 opacity-60">
+                      <h4 className="text-xs uppercase tracking-wider text-white/50 mb-1">Response from Service Center</h4>
+                      <p className="text-sm text-white/50 italic">Waiting for inspection from our technical team...</p>
+                    </div>
+                  )}
+                  
+                  {claim.repairCost > 0 && (
+                    <div className="mt-3 p-3 rounded-lg bg-red-500/10 border border-red-500/20">
+                      <h4 className="text-xs uppercase tracking-wider text-red-400 mb-1">Estimated Repair Cost</h4>
+                      <p className="text-sm font-bold text-red-400">{claim.repairCost.toLocaleString()} VND</p>
                     </div>
                   )}
                 </div>
