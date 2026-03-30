@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getCustomizations, CustomizationResponse } from '../api/customization-api';
 import { useAuth } from '@/providers/AuthProvider';
+import { addToCart } from '@/lib/cart';
 
 const CustomerCustomizationList: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [customizations, setCustomizations] = useState<CustomizationResponse[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -36,6 +39,19 @@ const CustomerCustomizationList: React.FC = () => {
       case 'rejected': return <span className="px-3 py-1 rounded bg-red-500/10 text-red-500 text-xs font-bold uppercase">Rejected</span>;
       default: return <span className="px-3 py-1 rounded bg-gray-500/10 text-gray-400 text-xs font-bold uppercase">{status || 'Unknown'}</span>;
     }
+  };
+
+  const handleCheckout = (item: CustomizationResponse) => {
+    addToCart({
+      productId: item.customId,
+      productName: `Custom: ${item.name}`,
+      sku: item.sku || 'N/A',
+      basePrice: item.quotedPrice,
+      quantity: 1,
+      isCustomization: true,
+      warrantyPeriodMonths: 0
+    });
+    navigate('/checkout');
   };
 
   return (
@@ -81,8 +97,11 @@ const CustomerCustomizationList: React.FC = () => {
                 <span className="text-2xl font-black text-primary">
                   {item.quotedPrice > 0 ? `$${item.quotedPrice.toFixed(2)}` : 'Awaiting Quote'}
                 </span>
-                {item.quotedPrice > 0 && item.status.toLowerCase() === 'processing' && (
-                  <button className="mt-3 px-4 py-2 bg-primary text-white text-xs font-bold uppercase rounded hover:bg-red-700 transition">
+                {item.quotedPrice > 0 && item.status?.toLowerCase() !== 'rejected' && item.status?.toLowerCase() !== 'pending' && (
+                  <button
+                    onClick={() => handleCheckout(item)}
+                    className="mt-3 px-4 py-2 bg-primary text-white text-xs font-bold uppercase rounded hover:bg-red-700 transition"
+                  >
                     Checkout Item
                   </button>
                 )}

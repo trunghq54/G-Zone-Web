@@ -77,13 +77,15 @@ const Checkout: React.FC = () => {
         wholeSale: false,
         note,
         orderDetails: cartItems.map((item) => ({
-          productName: item.productName,
-          variantInfo: item.sku,
-          quantity: item.quantity,
-          unitPrice: item.basePrice,
-          discountAmount: 0,
-          isCustomDesign: false,
-          warrantyPeriodMonths: item.warrantyPeriodMonths || 0,
+            productVariantId: item.isCustomization ? undefined : item.productId,
+            customizationId: item.isCustomization ? item.productId : undefined,
+            productName: item.productName,
+            variantInfo: item.sku,
+            quantity: item.quantity,
+            unitPrice: item.basePrice,
+            discountAmount: 0,
+            isCustomDesign: !!item.isCustomization,
+            warrantyPeriodMonths: item.warrantyPeriodMonths || 0,
         })),
       });
 
