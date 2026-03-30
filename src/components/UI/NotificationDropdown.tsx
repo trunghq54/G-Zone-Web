@@ -20,9 +20,9 @@ const NotificationDropdown: React.FC = () => {
   }, []);
 
   const fetchNotifications = async () => {
-    if (!user?.accountId) return;
+    if (!user?.id) return;
     try {
-      const result = await notificationApi.getNotificationsByAccount(user.accountId);
+      const result = await notificationApi.getNotificationsByAccount(user.id);
       if (result.statusCode === 200 && result.data) {
         setNotifications(result.data);
       }
@@ -39,9 +39,9 @@ const NotificationDropdown: React.FC = () => {
   }, [user]);
 
   const handleMarkAsRead = async (notificationId: string) => {
-    if (!user?.accountId) return;
+    if (!user?.id) return;
     try {
-      await notificationApi.markAsRead(user.accountId, notificationId);
+      await notificationApi.markAsRead(user.id, notificationId);
       setNotifications((prev) =>
         prev.map((n) =>
           n.notificationId === notificationId ? { ...n, isRead: true } : n
@@ -134,3 +134,4 @@ const NotificationDropdown: React.FC = () => {
 };
 
 export default NotificationDropdown;
+

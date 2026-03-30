@@ -53,16 +53,16 @@ const AdminWarrantyPage: React.FC = () => {
     if (!selectedClaim) return;
 
     try {
-      await warrantyApi.updateClaim(selectedClaim.claimId, {
-        claimStatus: updateForm.status,
-        resolutionNotes: updateForm.resolutionNotes,
-        repairCost: updateForm.repairCost,
-        processedByStaffId: user?.accountId
-      });
-      
-      showToast("Warranty claim updated successfully!");
-      setIsProcessing(false);
-      fetchClaims(); // refresh list
+        await warrantyApi.updateClaim(selectedClaim.claimId, {
+          claimStatus: updateForm.status,
+          resolutionNotes: updateForm.resolutionNotes,
+          repairCost: updateForm.repairCost,
+          processedByStaffId: user?.id
+        });
+
+        showToast("Warranty claim updated successfully!");
+        setIsProcessing(false);
+        fetchClaims(); // refresh list
     } catch (err) {
       console.error(err);
       showToast("Failed to update claim.");
