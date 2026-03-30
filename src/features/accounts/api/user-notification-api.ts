@@ -27,8 +27,7 @@ export interface MarkNotificationAsReadPayload {
  * @returns A promise that resolves to an array of UserNotification objects.
  */
 export const getUserNotifications = async (accountId: string): Promise<UserNotification[]> => {
-  // Giả định endpoint là /user-notifications/account/{accountId}
-  const response = await privateApi.get<{ data: UserNotification[] }>(`/user-notifications/account/${accountId}`);
+  const response = await privateApi.get<{ data: UserNotification[] }>(`/user-notifications/${accountId}`);
   return response.data.data;
 };
 
@@ -37,7 +36,6 @@ export const getUserNotifications = async (accountId: string): Promise<UserNotif
  * @param notificationId The ID of the notification to mark as read.
  * @param payload The payload containing the 'is-read' status.
  */
-export const markNotificationAsRead = async (notificationId: string, payload: MarkNotificationAsReadPayload): Promise<void> => {
-  // Giả định endpoint là /user-notifications/{notificationId}/read
-  await privateApi.put(`/user-notifications/${notificationId}/read`, payload);
+export const markNotificationAsRead = async (accountId: string, notificationId: string): Promise<void> => {
+  await privateApi.put(`/user-notifications/${accountId}/mark-read/${notificationId}`);
 };

@@ -77,7 +77,7 @@ const Checkout: React.FC = () => {
         wholeSale: false,
         note,
         orderDetails: cartItems.map((item) => ({
-            productVariantId: item.isCustomization ? undefined : item.productId,
+            productVariantId: undefined, // frontend only has productId, not variantId
             customizationId: item.isCustomization ? item.productId : undefined,
             productName: item.productName,
             variantInfo: item.sku,

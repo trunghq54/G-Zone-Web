@@ -38,7 +38,9 @@ const AllNotificationsPage: React.FC = () => {
     if (!notification || notification['is-read']) return;
 
     try {
-      await markNotificationAsRead(notificationId, { 'is-read': true });
+      if (user && user['account-id']) {
+        await markNotificationAsRead(user['account-id'], notificationId);
+      }
       setNotifications((prev) =>
         prev.map((n) =>
           n['notification-id'] === notificationId ? { ...n, 'is-read': true, 'read-at': new Date().toISOString() } : n

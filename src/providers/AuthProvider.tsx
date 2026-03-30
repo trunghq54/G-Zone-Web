@@ -44,7 +44,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       });
     };
 
-    if (profile && profile["avatar-url"]) {
+    if (profile && profile["avatar-url"] && profile["avatar-url"] !== "string") {
       try {
         const blob = await getAvatarImage(profile["avatar-url"]);
         const newAvatarUrl = URL.createObjectURL(blob);
