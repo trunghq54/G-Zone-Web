@@ -41,6 +41,11 @@ const ProfileDropdown: React.FC = () => {
       icon: "receipt_long",
     },
     {
+      label: "Custom Requests",
+      path: "/profile/customizations",
+      icon: "design_services",
+    },
+    {
       label: "Warranty Claims",
       path: "/profile/warranties",
       icon: "verified",
