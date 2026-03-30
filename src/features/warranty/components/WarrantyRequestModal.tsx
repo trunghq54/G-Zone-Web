@@ -70,7 +70,7 @@ export const WarrantyRequestModal: React.FC<WarrantyRequestModalProps> = ({ isOp
     setLoading(true);
     try {
       await warrantyApi.createClaim({
-        customerId: user?.accountId || '',
+        customerId: user?.id || '',
         orderDetailId: formData.orderDetailId,
         issueDescription: formData.issueDescription
       });

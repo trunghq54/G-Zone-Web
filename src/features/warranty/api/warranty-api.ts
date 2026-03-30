@@ -1,4 +1,4 @@
-import { publicApi as api } from '@/lib/axios-api';
+import api from '@/lib/axios-api';
 
 export interface WarrantyClaimRequest {
   issueDescription: string;
@@ -33,19 +33,35 @@ export interface WarrantyClaimResponse {
 
 export const warrantyApi = {
   createClaim: async (data: WarrantyClaimRequest) => {
-    const response = await api.post<{ statusCode: number; message: string; data: WarrantyClaimResponse }>('/WarrantyClaims', data);
+    const payload = {
+      "issue-description": data.issueDescription,
+      "customer-id": data.customerId,
+      "order-detail-id": data.orderDetailId
+    };
+    const response = await api.post<{ statusCode: number; message: string; data: WarrantyClaimResponse }>('/warranty-claims', payload);
     return response.data;
   },
-  
+
   getClaims: async (params?: { pageNumber?: number; pageSize?: number; customerId?: string }) => {
-    const response = await api.get<{ statusCode: number; message: string; data: { dataList: WarrantyClaimResponse[], totalCount: number, pageIndex: number, pageSize: number } }>('/WarrantyClaims', { params });
+    const queryParams: any = {};
+    if (params) {
+      if (params.pageNumber !== undefined) queryParams.pageNumber = params.pageNumber;
+      if (params.pageSize !== undefined) queryParams.pageSize = params.pageSize;
+      if (params.customerId !== undefined) queryParams["customer-id"] = params.customerId;
+    }
+    const response = await api.get<{ statusCode: number; message: string; data: { dataList: WarrantyClaimResponse[], totalCount: number, pageIndex: number, pageSize: number } }>('/warranty-claims', { params: queryParams });
     return response.data;
   },
 
   updateClaim: async (id: string, data: WarrantyClaimUpdateRequest) => {
-    const response = await api.put<{ statusCode: number; message: string; data: WarrantyClaimResponse }>(`/WarrantyClaims/${id}`, data);
+    const payload = {
+      "claim-status": data.claimStatus,
+      "resolution-notes": data.resolutionNotes,
+      "repair-cost": data.repairCost,
+      "processed-by-staff-id": data.processedByStaffId,
+      status: data.status
+    };
+    const response = await api.put<{ statusCode: number; message: string; data: WarrantyClaimResponse }>(`/warranty-claims/${id}`, payload);
     return response.data;
   }
 };
-
-
