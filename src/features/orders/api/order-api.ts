@@ -190,6 +190,11 @@ export const getMyOrders = async (pageNumber = 1, pageSize = 20) => {
   };
 };
 
+export const getOrderById = async (orderId: string) => {
+  const response = await api.get(`/orders/${orderId}`);
+  return mapOrderFromBackend(response.data?.data);
+};
+
 export const createOrder = async (order: OrderRequest) => {
   const response = await api.post("/orders", mapOrderRequestToBackend(order));
   return mapOrderFromBackend(response.data.data);
