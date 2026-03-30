@@ -49,10 +49,10 @@ const CustomizationModal: React.FC<CustomizationModalProps> = ({
     const handleSubmit = async () => {
         try {
             const user = JSON.parse(localStorage.getItem("GZONE_USER_DATA") || "{}");
-            const customerId = user?.accountId || user?.["account-id"];
+            const customerId = user?.id || user?.accountId || user?.["account-id"];
 
             if (!customerId) {
-                alert("User not found");
+                alert("User not found from local storage.");
                 return;
             }
 
@@ -82,9 +82,10 @@ const CustomizationModal: React.FC<CustomizationModalProps> = ({
             }
 
             onClose();
-        } catch (err) {
-            console.error("Save customization failed", err);
-            alert("Failed to save customization");
+        } catch (err: any) {
+            console.error("Save customization failed:", err);
+            const errorMsg = err.response?.data?.message || err.response?.data?.title || err.message || "Unknown error";
+            alert(`Failed: ${errorMsg}`);
         }
     };
 

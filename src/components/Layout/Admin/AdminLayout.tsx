@@ -10,6 +10,7 @@ const NAVIGATION_ITEMS = [
   { name: "Categories", href: "/management/categories", icon: "category" },
   { name: "Orders", href: "/management/orders", icon: "local_mall" },
   { name: "Warranties", href: "/management/warranties", icon: "plumbing" },
+  { name: "Customizations", href: "/management/customizations", icon: "design_services" },
 ];
 
 const AdminLayout: React.FC = () => {

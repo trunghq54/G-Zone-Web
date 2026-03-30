@@ -38,8 +38,8 @@ import AdminCategories from "@/features/admin/routes/AdminCategories";
 import AdminProducts from "@/features/admin/routes/AdminProducts";
 import AdminAccounts from "@/features/admin/routes/AdminAccounts";
 import AdminOrders from "./src/features/admin/routes/AdminOrders";
-import AdminWarrantyPage from "@/features/admin/routes/AdminWarrantyPage";
-import { ToastProvider } from "@/providers/ToastProvider";
+import AdminWarrantyPage from "@/features/admin/routes/AdminWarrantyPage";import CustomerCustomizationList from "@/features/customizations/routes/CustomerCustomizationList";
+import AdminCustomizationList from "@/features/customizations/routes/AdminCustomizationList";import { ToastProvider } from "@/providers/ToastProvider";
 
 const App: React.FC = () => {
   return (
@@ -66,17 +66,16 @@ const App: React.FC = () => {
               <Route path="/profile/orders" element={<MyOrders />} />
                 <Route path="/profile/notifications" element={<NotificationPage />} />
                 <Route path="/profile/warranties" element={<WarrantyPage />} />
-            </Route>
-            <Route path="/management" element={<AdminLayout />}>
-              <Route index element={<AdminDashboard />} />
-              <Route path="accounts" element={<AdminAccounts />} />
-              <Route path="categories" element={<AdminCategories />} />
-              <Route path="products" element={<AdminProducts />} />
-              <Route path="orders" element={<AdminOrders />} />
-              <Route path="warranties" element={<AdminWarrantyPage />} />
-            </Route>
-
-            {/* Auth Route */}
+                <Route path="/profile/customizations" element={<CustomerCustomizationList />} />
+              </Route>
+              <Route path="/management" element={<AdminLayout />}>
+                <Route index element={<AdminDashboard />} />
+                <Route path="accounts" element={<AdminAccounts />} />
+                <Route path="categories" element={<AdminCategories />} />
+                <Route path="products" element={<AdminProducts />} />
+                <Route path="orders" element={<AdminOrders />} />
+                <Route path="warranties" element={<AdminWarrantyPage />} />
+                <Route path="customizations" element={<AdminCustomizationList />} />              </Route>            {/* Auth Route */}
             <Route path="/login" element={<Login />} />
             <Route path="/*" element={<BadRequest />} />
           </Routes>
