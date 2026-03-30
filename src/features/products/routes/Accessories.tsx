@@ -114,6 +114,7 @@ const Accessories: React.FC = () => {
       quantity: 1,
       categoryId: product.categoryId,
       warrantyPeriodMonths: product.warrantyPeriodMonths,
+      imageUrl: product.imageUrl,
     });
     showToast(`"${product.productName}" added to cart!`);
   };
@@ -336,3 +337,5 @@ const Accessories: React.FC = () => {
 };
 
 export default Accessories;
+
+

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/providers/AuthProvider";
 import ProfileDropdown from "../UI/ProfileDropdown";
+import NotificationDropdown from "../UI/NotificationDropdown";
 import { getCart, getCartCount } from "@/lib/cart";
 import logo from "@/assets/logo/logo-gzone.png";
 
@@ -135,7 +136,12 @@ const Header: React.FC = () => {
                 </span>
               )}
             </Link>
-            {isAuthenticated && <ProfileDropdown />}
+            {isAuthenticated && (
+              <>
+                <NotificationDropdown />
+                <ProfileDropdown />
+              </>
+            )}
             {!isAuthenticated && (
               <Link
                 to="/login"
