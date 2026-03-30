@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import CustomizationModal from "./components/CustomizationModal";
 import {
   CartItem,
   getCart,
@@ -21,8 +20,6 @@ const Cart: React.FC = () => {
     window.addEventListener('cart:updated', load);
     return () => window.removeEventListener('cart:updated', load);
   }, []);
-
-  const [customizingItem, setCustomizingItem] = useState<CartItem | null>(null);
 
   const subtotal = useMemo(() => getCartSubtotal(items), [items]);
   const totalItems = useMemo(() => getCartCount(items), [items]);
@@ -85,27 +82,11 @@ const Cart: React.FC = () => {
                   <div className="col-span-2 text-right flex flex-row md:flex-col justify-between items-center md:items-end w-full md:w-auto mt-4 md:mt-0 border-t border-[#3a1515] md:border-none pt-4 md:pt-0">
                     <span className="text-white font-bold text-lg">${(item.basePrice * item.quantity).toFixed(2)}</span>
                     <button
-                      onClick={() => setCustomizingItem(item)}
-                      className="text-xs font-bold uppercase text-yellow-400 hover:text-yellow-300 mb-2"
-                    >
-                      Customize
-                    </button>
-                    <button
                       onClick={() => removeCartItem(item.productId)}
                       className="text-xs font-bold uppercase text-red-400 hover:text-red-300"
                     >
                       Remove
                     </button>
-                    {customizingItem && (
-                      <CustomizationModal
-                        item={customizingItem}
-                        onClose={() => setCustomizingItem(null)}
-                        onSave={(data) => {
-                          console.log("Customization:", data);
-                          
-                        }}
-                      />
-                    )}
                   </div>
                 </div>
               </div>

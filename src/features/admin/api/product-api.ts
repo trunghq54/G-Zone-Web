@@ -116,13 +116,6 @@ export const deleteProduct = async (id: string) => {
   return response.data;
 };
 
-export const getProductImage = async (relativeUrl: string) => {
-  const response = await api.get(`/image/products/${relativeUrl}`, {
-    responseType: "blob",
-  });
-  return response.data;
-};
-
 export const createProductImage = async (
   file: File,
   fileName: string,

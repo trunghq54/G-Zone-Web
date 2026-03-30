@@ -40,6 +40,8 @@ import AdminProducts from "@/features/admin/routes/AdminProducts";
 import AdminAccounts from "@/features/admin/routes/AdminAccounts";
 import AdminOrders from "./src/features/admin/routes/AdminOrders";
 import AdminWarrantyPage from "@/features/admin/routes/AdminWarrantyPage";
+import CustomerCustomizationList from "@/features/customizations/routes/CustomerCustomizationList";
+import AdminCustomizationList from "@/features/customizations/routes/AdminCustomizationList";
 import { ToastProvider } from "@/providers/ToastProvider";
 
 const App: React.FC = () => {
@@ -65,11 +67,9 @@ const App: React.FC = () => {
               <Route path="/cart" element={<Cart />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/profile/orders" element={<MyOrders />} />
+              <Route path="/profile/notifications" element={<AllNotificationsPage />} />
               <Route path="/profile/warranties" element={<WarrantyPage />} />
-              <Route
-                path="/profile/notifications"
-                element={<AllNotificationsPage />}
-              />
+              <Route path="/profile/customizations" element={<CustomerCustomizationList />} />
             </Route>
             <Route path="/management" element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
@@ -78,6 +78,7 @@ const App: React.FC = () => {
               <Route path="products" element={<AdminProducts />} />
               <Route path="orders" element={<AdminOrders />} />
               <Route path="warranties" element={<AdminWarrantyPage />} />
+              <Route path="customizations" element={<AdminCustomizationList />} />
             </Route>
 
             {/* Auth Route */}

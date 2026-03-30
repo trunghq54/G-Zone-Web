@@ -1,9 +1,12 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { clearCart, getCart, getCartSubtotal } from '@/lib/cart';
 import { createOrder } from '@/features/orders/api/order-api';
+import { getUserAddresses } from '@/features/accounts/api/address-api';
+import { useAuth } from '@/providers/AuthProvider';
 
 const Checkout: React.FC = () => {
+  const { user } = useAuth();
   const [shippingAddress, setShippingAddress] = useState('');
   const [shippingCity, setShippingCity] = useState('');
   const [shippingDistrict, setShippingDistrict] = useState('');
@@ -19,6 +22,34 @@ const Checkout: React.FC = () => {
   const subtotal = useMemo(() => getCartSubtotal(cartItems), [cartItems]);
   const shippingFee = subtotal > 0 ? 1.5 : 0;
   const total = subtotal + shippingFee;
+
+  useEffect(() => {
+    const fetchDefaultAddress = async () => {
+      try {
+        const addresses = await getUserAddresses();
+        const defaultAddress = addresses.find((a) => a['is-default']) || addresses[0];
+        if (defaultAddress) {
+          setShippingAddress(defaultAddress.address || '');
+          setShippingCity(defaultAddress.city || '');
+          setShippingDistrict(defaultAddress.district || '');
+          setShippingWard(defaultAddress.ward || '');
+          setReceiverName(defaultAddress['receiver-name'] || '');
+          setReceiverPhone(defaultAddress['receiver-phone'] || '');
+        } else if (user) {
+          // Fallback to user profile if no addresses saved
+          setReceiverName(user['full-name'] || user.fullName || '');
+          setReceiverPhone(user.phone || '');
+        }
+      } catch (err) {
+        console.error('Could not fetch user addresses', err);
+        if (user) {
+          setReceiverName(user['full-name'] || user.fullName || '');
+          setReceiverPhone(user.phone || '');
+        }
+      }
+    };
+    fetchDefaultAddress();
+  }, [user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,13 +77,15 @@ const Checkout: React.FC = () => {
         wholeSale: false,
         note,
         orderDetails: cartItems.map((item) => ({
-          productName: item.productName,
-          variantInfo: item.sku,
-          quantity: item.quantity,
-          unitPrice: item.basePrice,
-          discountAmount: 0,
-          isCustomDesign: false,
-          warrantyPeriodMonths: item.warrantyPeriodMonths || 0,
+            productVariantId: undefined, // frontend only has productId, not variantId
+            customizationId: item.isCustomization ? item.productId : undefined,
+            productName: item.productName,
+            variantInfo: item.sku,
+            quantity: item.quantity,
+            unitPrice: item.basePrice,
+            discountAmount: 0,
+            isCustomDesign: !!item.isCustomization,
+            warrantyPeriodMonths: item.warrantyPeriodMonths || 0,
         })),
       });
 

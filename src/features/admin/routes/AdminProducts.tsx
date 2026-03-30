@@ -1,7 +1,8 @@
 
 import React, { useEffect, useState } from "react";
-import { getProducts, deleteProduct, createProduct, updateProduct, Product, ProductRequest, getProductImage } from "../api/product-api";
+import { getProducts, deleteProduct, createProduct, updateProduct, Product, ProductRequest } from "../api/product-api";
 import { getCategories, Category } from "../api/category-api";
+import { resolveImageUrl } from "@/lib/image";
 import ProductModal from "../components/ProductModal";
 
 const AdminProducts: React.FC = () => {
@@ -9,8 +10,6 @@ const AdminProducts: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [imageMap, setImageMap] = useState<Record<string, string>>({});
-
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -37,29 +36,6 @@ const AdminProducts: React.FC = () => {
   useEffect(() => {
     fetchData();
   }, []);
-
-  useEffect(() => {
-    const loadImages = async () => {
-      const map: Record<string, string> = {};
-
-      await Promise.all(
-        products.map(async (p) => {
-          try {
-            const blob = await getProductImage(p.productId+'.jpg');
-            const url = URL.createObjectURL(blob);
-            map[p.productId] = url;
-          } catch (err) {
-            console.error("Failed to load image", err);
-          }
-        })
-      );
-
-      setImageMap(map);
-    };
-
-    if (products.length) loadImages();
-  }, [products]);
-
 
   const handleDelete = async (id: string) => {
     if (!window.confirm("Are you sure you want to delete this product?")) return;
@@ -142,15 +118,11 @@ const AdminProducts: React.FC = () => {
                         {prod.brand && <p className="text-xs text-text-muted mt-0.5">{prod.brand}</p>}
                       </td>
                       <td className="px-6 py-4">
-                        {prod.imageUrl ? (
-                          <img
-                            src={`${import.meta.env.VITE_API_URL}/image/${prod.imageUrl}`}
-                            alt={prod.productName}
-                            className="w-12 h-12 object-cover rounded"
-                          />
-                        ) : (
-                          <span className="text-xs text-text-muted">No Image</span>
-                        )}
+                        <img
+                          src={resolveImageUrl(prod.imageUrl)}
+                          alt={prod.productName}
+                          className="w-12 h-12 object-cover rounded"
+                        />
                       </td>
 
                       <td className="px-6 py-4 text-text-muted">{prod.sku}</td>

@@ -35,7 +35,7 @@ export interface CustomizationUpdateRequest {
   size: string;
   weight: number;
   quotedPrice: number;
-  staffNote: 'staff note is currently empty';
+  staffNote: string;
   status: string;
   confirmedByStaffId?: string;
 }
@@ -66,6 +66,29 @@ const mapToFrontend = (data: any): Customization => ({
   customerName: data["customer-name"],
   staffName: data["staff-name"],
   productName: data["product-name"],
+});
+
+/* ===================== MAP TO BACKEND ===================== */
+const mapToBackendCreate = (data: CustomizationCreateRequest) => ({
+  name: data.name,
+  sku: data.sku,
+  color: data.color,
+  size: data.size,
+  weight: data.weight,
+  "staff-note": data.staffNote,
+  "customer-id": data.customerId,
+  "product-id": data.productId,
+});
+
+const mapToBackendUpdate = (data: CustomizationUpdateRequest) => ({
+  name: data.name,
+  color: data.color,
+  size: data.size,
+  weight: data.weight,
+  "quoted-price": data.quotedPrice,
+  "staff-note": data.staffNote,
+  status: data.status,
+  "confirmed-by-staff-id": data.confirmedByStaffId,
 });
 
 /* ===================== API ===================== */
@@ -108,7 +131,7 @@ export const getCustomizationById = async (id: string) => {
 export const createCustomization = async (
   data: CustomizationCreateRequest
 ) => {
-  const response = await api.post(BASE_URL, data);
+  const response = await api.post(BASE_URL, mapToBackendCreate(data));
   return mapToFrontend(response.data.data);
 };
 
@@ -117,7 +140,7 @@ export const updateCustomization = async (
   id: string,
   data: CustomizationUpdateRequest
 ) => {
-  const response = await api.put(`${BASE_URL}/${id}`, data);
+  const response = await api.put(`${BASE_URL}/${id}`, mapToBackendUpdate(data));
   return mapToFrontend(response.data.data);
 };
 

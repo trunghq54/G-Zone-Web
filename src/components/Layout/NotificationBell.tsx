@@ -34,10 +34,10 @@ const NotificationBell: React.FC = () => {
   }, [isAuthenticated, user]);
 
   useEffect(() => {
-    if (isAuthenticated && user && isOpen) {
+    if (isAuthenticated && user) {
       fetchNotifications();
     }
-  }, [isAuthenticated, user, isOpen, fetchNotifications]);
+  }, [isAuthenticated, user, fetchNotifications]); // Vừa nãy bị phụ thuộc vào isOpen nên phải click chuông (isOpen = true) mới gọi API, giờ t sửa bỏ nó đi.
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -65,7 +65,9 @@ const NotificationBell: React.FC = () => {
     if (!notification || notification['is-read']) return;
 
     try {
-      await markNotificationAsRead(notificationId, { 'is-read': true });
+      if (user && user['account-id']) {
+        await markNotificationAsRead(user['account-id'], notificationId);
+      }
       setNotifications((prev) =>
         prev.map((n) =>
           n['notification-id'] === notificationId ? { ...n, 'is-read': true, 'read-at': new Date().toISOString() } : n
