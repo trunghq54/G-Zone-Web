@@ -115,3 +115,29 @@ export const deleteProduct = async (id: string) => {
   const response = await api.delete(`/products/${id}`);
   return response.data;
 };
+
+export const getProductImage = async (relativeUrl: string) => {
+  const response = await api.get(`/image/products/${relativeUrl}`, {
+    responseType: "blob",
+  });
+  return response.data;
+};
+
+export const createProductImage = async (
+  file: File,
+  fileName: string,
+  category: string = "product"
+) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("fileName", fileName);
+  formData.append("category", category);
+
+  const response = await api.post("/image", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
+  return response.data; // { success, path }
+};

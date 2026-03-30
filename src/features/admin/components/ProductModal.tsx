@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { Product, ProductRequest } from "../api/product-api";
+import { Product, ProductRequest, createProductImage } from "../api/product-api";
 import { Category } from "../api/category-api";
 
 interface ProductModalProps {
@@ -41,6 +41,20 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
   const [loading, setLoading] = useState(false);
 
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  const getImageUrl = (path?: string) => {
+    if (!path) return null;
+
+    // if already blob (new upload)
+    if (path.startsWith("blob:")) return path;
+
+    // backend image endpoint
+    return `${import.meta.env.VITE_API_URL}/image/${path}`;
+  };
+
+
   useEffect(() => {
     if (initialData) {
       setFormData({
@@ -52,6 +66,8 @@ const ProductModal: React.FC<ProductModalProps> = ({
         dimension: initialData.dimension || "",
         imageUrl: initialData.imageUrl || "",
       });
+      setPreviewUrl(getImageUrl(initialData.imageUrl) || null);
+      setImageFile(null);
     } else {
       setFormData({
         productName: "",
@@ -73,6 +89,8 @@ const ProductModal: React.FC<ProductModalProps> = ({
         categoryId: categories.length > 0 ? categories[0].categoryId : "",
         imageUrl: "",
       });
+      setPreviewUrl(null);
+      setImageFile(null);
     }
   }, [initialData, isOpen, categories]);
 
@@ -96,6 +114,16 @@ const ProductModal: React.FC<ProductModalProps> = ({
     }
   };
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setImageFile(file);
+
+    const localUrl = URL.createObjectURL(file);
+    setPreviewUrl(localUrl); // ✅ override preview with new image
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -105,13 +133,24 @@ const ProductModal: React.FC<ProductModalProps> = ({
         setLoading(false);
         return;
       }
-      await onSave(formData, initialData?.productId);
+      let imagePath = initialData?.imageUrl || "";
+
+      // ✅ only upload if user picked new file
+      if (imageFile) {
+        const res = await createProductImage(
+          imageFile,
+          formData.productName,
+          "product"
+        );
+        imagePath = res.path;
+      }
+      await onSave({ ...formData, imageUrl: imagePath } as any, initialData?.productId);
       onClose();
     } catch (error: any) {
       console.error(error.response?.data || error);
       alert(
         error.response?.data?.message ||
-          "Something went wrong saving the product."
+        "Something went wrong saving the product."
       );
     } finally {
       setLoading(false);
@@ -223,6 +262,29 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
           <div>
             <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-2">
+              Product Image
+            </label>
+
+            <div className="flex items-center gap-4">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="text-sm text-white"
+              />
+
+              {previewUrl && (
+                <img
+                  src={previewUrl}
+                  alt="preview"
+                  className="w-16 h-16 object-cover rounded border border-surface-border"
+                />
+              )}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-2">
               Description
             </label>
             <textarea
@@ -307,19 +369,19 @@ const ProductModal: React.FC<ProductModalProps> = ({
               />
             </div>
           </div>
-          
+
           <div>
-              <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-2">
-                Specifications
-              </label>
-              <textarea
-                name="specifications"
-                value={formData.specifications}
-                onChange={handleChange}
-                rows={2}
-                className="w-full bg-[#2a1212] border border-surface-border rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors resize-none"
-                placeholder="Technical specs..."
-              />
+            <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-2">
+              Specifications
+            </label>
+            <textarea
+              name="specifications"
+              value={formData.specifications}
+              onChange={handleChange}
+              rows={2}
+              className="w-full bg-[#2a1212] border border-surface-border rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors resize-none"
+              placeholder="Technical specs..."
+            />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -340,7 +402,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
                 </label>
               </div>
             </div>
-            
+
             <div>
               <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-2">
                 Featured
