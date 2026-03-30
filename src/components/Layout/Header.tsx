@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/providers/AuthProvider";
 import ProfileDropdown from "../UI/ProfileDropdown";
-import NotificationDropdown from "../UI/NotificationDropdown";
+import NotificationBell from "./NotificationBell";
 import { getCart, getCartCount } from "@/lib/cart";
 import logo from "@/assets/logo/logo-gzone.png";
 
@@ -136,11 +136,18 @@ const Header: React.FC = () => {
                 </span>
               )}
             </Link>
-            {isAuthenticated && (
-              <>
-                <NotificationDropdown />
-                <ProfileDropdown />
-              </>
+            <NotificationBell />
+            {isAuthenticated ? (
+              <ProfileDropdown />
+            ) : (
+              <Link
+                to="/login"
+                className="flex size-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-white transition-colors hover:border-primary/40 hover:text-primary"
+              >
+                <span className="material-symbols-outlined text-[20px]">
+                  person
+                </span>
+              </Link>
             )}
             {!isAuthenticated && (
               <Link

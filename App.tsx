@@ -13,6 +13,7 @@ import Cart from "./src/features/cart/routes/Cart";
 import Accessories from "@/features/products/routes/Accessories";
 import { AuthProvider } from "@/providers/AuthProvider";
 import BadRequest from "@/components/pages/BadRequest";
+import AllNotificationsPage from "@/features/accounts/routes/AllNotificationsPage";
 
 const MainLayout: React.FC = () => {
   return (
@@ -64,8 +65,11 @@ const App: React.FC = () => {
               <Route path="/cart" element={<Cart />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/profile/orders" element={<MyOrders />} />
-                <Route path="/profile/notifications" element={<NotificationPage />} />
-                <Route path="/profile/warranties" element={<WarrantyPage />} />
+              <Route path="/profile/warranties" element={<WarrantyPage />} />
+              <Route
+                path="/profile/notifications"
+                element={<AllNotificationsPage />}
+              />
             </Route>
             <Route path="/management" element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
@@ -87,5 +91,3 @@ const App: React.FC = () => {
 };
 
 export default App;
-
-
