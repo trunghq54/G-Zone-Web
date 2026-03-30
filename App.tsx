@@ -13,6 +13,7 @@ import Cart from "./src/features/cart/routes/Cart";
 import Accessories from "@/features/products/routes/Accessories";
 import { AuthProvider } from "@/providers/AuthProvider";
 import BadRequest from "@/components/pages/BadRequest";
+import AllNotificationsPage from "@/features/accounts/routes/AllNotificationsPage";
 
 const MainLayout: React.FC = () => {
   return (
@@ -38,8 +39,10 @@ import AdminCategories from "@/features/admin/routes/AdminCategories";
 import AdminProducts from "@/features/admin/routes/AdminProducts";
 import AdminAccounts from "@/features/admin/routes/AdminAccounts";
 import AdminOrders from "./src/features/admin/routes/AdminOrders";
-import AdminWarrantyPage from "@/features/admin/routes/AdminWarrantyPage";import CustomerCustomizationList from "@/features/customizations/routes/CustomerCustomizationList";
-import AdminCustomizationList from "@/features/customizations/routes/AdminCustomizationList";import { ToastProvider } from "@/providers/ToastProvider";
+import AdminWarrantyPage from "@/features/admin/routes/AdminWarrantyPage";
+import CustomerCustomizationList from "@/features/customizations/routes/CustomerCustomizationList";
+import AdminCustomizationList from "@/features/customizations/routes/AdminCustomizationList";
+import { ToastProvider } from "@/providers/ToastProvider";
 
 const App: React.FC = () => {
   return (
@@ -64,18 +67,21 @@ const App: React.FC = () => {
               <Route path="/cart" element={<Cart />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/profile/orders" element={<MyOrders />} />
-                <Route path="/profile/notifications" element={<NotificationPage />} />
-                <Route path="/profile/warranties" element={<WarrantyPage />} />
-                <Route path="/profile/customizations" element={<CustomerCustomizationList />} />
-              </Route>
-              <Route path="/management" element={<AdminLayout />}>
-                <Route index element={<AdminDashboard />} />
-                <Route path="accounts" element={<AdminAccounts />} />
-                <Route path="categories" element={<AdminCategories />} />
-                <Route path="products" element={<AdminProducts />} />
-                <Route path="orders" element={<AdminOrders />} />
-                <Route path="warranties" element={<AdminWarrantyPage />} />
-                <Route path="customizations" element={<AdminCustomizationList />} />              </Route>            {/* Auth Route */}
+              <Route path="/profile/notifications" element={<AllNotificationsPage />} />
+              <Route path="/profile/warranties" element={<WarrantyPage />} />
+              <Route path="/profile/customizations" element={<CustomerCustomizationList />} />
+            </Route>
+            <Route path="/management" element={<AdminLayout />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="accounts" element={<AdminAccounts />} />
+              <Route path="categories" element={<AdminCategories />} />
+              <Route path="products" element={<AdminProducts />} />
+              <Route path="orders" element={<AdminOrders />} />
+              <Route path="warranties" element={<AdminWarrantyPage />} />
+              <Route path="customizations" element={<AdminCustomizationList />} />
+            </Route>
+
+            {/* Auth Route */}
             <Route path="/login" element={<Login />} />
             <Route path="/*" element={<BadRequest />} />
           </Routes>
@@ -86,5 +92,3 @@ const App: React.FC = () => {
 };
 
 export default App;
-
-
