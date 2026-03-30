@@ -45,6 +45,7 @@ const ProductDetail: React.FC = () => {
       quantity: qty,
       categoryId: product.categoryId,
       warrantyPeriodMonths: product.warrantyPeriodMonths,
+      imageUrl: product.imageUrl,
     });
     setAdded(true);
     showToast(`"${product.productName}" added to cart!`);
@@ -61,6 +62,7 @@ const ProductDetail: React.FC = () => {
       quantity: qty,
       categoryId: product.categoryId,
       warrantyPeriodMonths: product.warrantyPeriodMonths,
+      imageUrl: product.imageUrl,
     });
     navigate('/checkout');
   };
@@ -244,4 +246,7 @@ const ProductDetail: React.FC = () => {
 };
 
 export default ProductDetail;
+
+
+
 

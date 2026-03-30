@@ -44,8 +44,9 @@ const Cart: React.FC = () => {
                 <div className="flex flex-col md:grid md:grid-cols-12 gap-6 p-5 items-center">
                   <div className="col-span-6 flex items-start gap-5 w-full">
                     <div className="shrink-0 relative">
-                      <div className="bg-center bg-no-repeat bg-cover rounded-lg size-24 md:size-28 bg-[#150a0a] border border-[#3a1515] flex items-center justify-center">
-                        <span className="material-symbols-outlined text-white/25">inventory_2</span>
+                      <div className="bg-center bg-no-repeat bg-cover rounded-lg size-24 md:size-28 bg-[#150a0a] border border-[#3a1515] flex items-center justify-center overflow-hidden">
+                        {!item.imageUrl && <span className="material-symbols-outlined text-white/25">inventory_2</span>}
+                          {item.imageUrl && <img src={item.imageUrl} alt={item.productName} className="w-full h-full object-cover" />}
                       </div>
                     </div>
                     <div>
@@ -117,3 +118,6 @@ const Cart: React.FC = () => {
 };
 
 export default Cart;
+
+
+

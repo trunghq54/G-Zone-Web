@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { warrantyApi, WarrantyClaimResponse } from "@/features/warranty/api/warranty-api";
+import { notificationApi } from "@/features/notifications/api/notification-api";
 import { useToast } from "@/providers/ToastProvider";
 import { useAuth } from "@/providers/AuthProvider";
 

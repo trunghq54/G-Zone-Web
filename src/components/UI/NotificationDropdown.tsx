@@ -34,7 +34,7 @@ const NotificationDropdown: React.FC = () => {
   useEffect(() => {
     fetchNotifications();
     // Setup simple polling every 1 minute
-    const interval = setInterval(fetchNotifications, 60000);
+    const interval = setInterval(fetchNotifications, 15000);
     return () => clearInterval(interval);
   }, [user]);
 
@@ -134,4 +134,5 @@ const NotificationDropdown: React.FC = () => {
 };
 
 export default NotificationDropdown;
+
 
