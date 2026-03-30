@@ -112,7 +112,11 @@ const ProductDetail: React.FC = () => {
                 <span className="bg-primary text-white text-xs font-bold px-3 py-1 rounded uppercase tracking-wider">Featured</span>
               </div>
             )}
-            <span className="material-symbols-outlined text-9xl text-white/20">inventory_2</span>
+            {product.imageUrl ? (
+              <img src={product.imageUrl} alt={product.productName} className="w-full h-full object-contain" />
+            ) : (
+              <span className="material-symbols-outlined text-9xl text-white/20">inventory_2</span>
+            )}
           </div>
           {/* Trust signals */}
           <div className="grid grid-cols-3 gap-3">
@@ -221,7 +225,11 @@ const ProductDetail: React.FC = () => {
               <Link key={p.productId} to={`/product/${p.productId}`}
                 className="group rounded-xl border border-surface-border bg-surface-dark p-4 hover:border-primary/50 transition-all hover:shadow-lg hover:shadow-primary/5">
                 <div className="h-28 flex items-center justify-center mb-3">
-                  <span className="material-symbols-outlined text-4xl text-white/20 group-hover:scale-110 transition-transform">two_wheeler</span>
+                  {p.imageUrl ? (
+                    <img src={p.imageUrl} alt={p.productName} className="h-full object-contain group-hover:scale-110 transition-transform" />
+                  ) : (
+                    <span className="material-symbols-outlined text-4xl text-white/20 group-hover:scale-110 transition-transform">two_wheeler</span>
+                  )}
                 </div>
                 <p className="text-xs text-text-muted font-mono mb-1">{p.brand || 'G-Zone'}</p>
                 <p className="text-white text-sm font-bold group-hover:text-primary transition-colors line-clamp-2 leading-snug">{p.productName}</p>

@@ -36,6 +36,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
     isFeatured: false,
     warrantyPeriodMonths: 0,
     categoryId: "",
+    imageUrl: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -49,6 +50,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
         material: initialData.material || "",
         specifications: initialData.specifications || "",
         dimension: initialData.dimension || "",
+        imageUrl: initialData.imageUrl || "",
       });
     } else {
       setFormData({
@@ -69,6 +71,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
         isFeatured: false,
         warrantyPeriodMonths: 0,
         categoryId: categories.length > 0 ? categories[0].categoryId : "",
+        imageUrl: "",
       });
     }
   }, [initialData, isOpen, categories]);
@@ -194,6 +197,27 @@ const ProductModal: React.FC<ProductModalProps> = ({
                 className="w-full bg-[#2a1212] border border-surface-border rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors"
                 placeholder="e.g. AGV, Alpinestars"
               />
+            </div>
+            
+            <div className="md:col-span-2">
+              <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-2">
+                Image URL
+              </label>
+              <div className="flex gap-2 items-center">
+                <input
+                  type="text"
+                  name="imageUrl"
+                  value={formData.imageUrl || ""}
+                  onChange={handleChange}
+                  className="flex-1 bg-[#2a1212] border border-surface-border rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors"
+                  placeholder="e.g. https://images.unsplash.com/photo-example"
+                />
+                {formData.imageUrl && (
+                  <div className="w-12 h-12 rounded overflow-hidden border border-surface-border shrink-0">
+                    <img src={formData.imageUrl} alt="Preview" className="w-full h-full object-cover" />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 

@@ -247,11 +247,19 @@ const Home: React.FC = () => {
             >
               <Link
                 to={`/product/${product.productId}`}
-                className="flex h-48 items-center justify-center border-b border-white/5 bg-[radial-gradient(circle_at_top,_rgba(230,0,0,0.14),_transparent_40%),linear-gradient(180deg,_#191919,_#101010)] p-5"
+                className="flex h-48 items-center justify-center border-b border-white/5 bg-[radial-gradient(circle_at_top,_rgba(230,0,0,0.14),_transparent_40%),linear-gradient(180deg,_#191919,_#101010)] overflow-hidden"
               >
-                <span className="material-symbols-outlined text-[64px] text-white/18">
-                  inventory_2
-                </span>
+                {product.imageUrl ? (
+                  <img 
+                    src={product.imageUrl} 
+                    alt={product.productName} 
+                    className="w-full h-full object-cover transition-transform duration-700 hover:scale-105" 
+                  />
+                ) : (
+                  <span className="material-symbols-outlined text-[64px] text-white/18">
+                    inventory_2
+                  </span>
+                )}
               </Link>
               <div className="p-5">
                 <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.22em] text-text-muted">

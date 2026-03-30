@@ -229,7 +229,11 @@ const Accessories: React.FC = () => {
                       </span>
                     </div>
                     <div className="flex h-36 items-center justify-center">
-                      <span className="material-symbols-outlined text-[72px] text-white/18 transition-transform duration-300 group-hover:scale-110">two_wheeler</span>
+                      {product.imageUrl ? (
+                        <img src={product.imageUrl} alt={product.productName} className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-110" />
+                      ) : (
+                        <span className="material-symbols-outlined text-[72px] text-white/18 transition-transform duration-300 group-hover:scale-110">two_wheeler</span>
+                      )}
                     </div>
                     <div className="mt-8 flex items-center justify-between text-[10px] font-bold uppercase tracking-[0.18em] text-white/45">
                       <span>{product.sku}</span>
