@@ -38,8 +38,48 @@ export const warrantyApi = {
   },
   
   getClaims: async (params?: { pageNumber?: number; pageSize?: number; customerId?: string }) => {
+<<<<<<< Updated upstream
     const response = await api.get<{ statusCode: number; message: string; data: { dataList: WarrantyClaimResponse[], totalCount: number, pageIndex: number, pageSize: number } }>('/WarrantyClaims', { params });
     return response.data;
+=======
+    const queryParams: any = {};
+    if (params) {
+      if (params.pageNumber !== undefined) queryParams.pageNumber = params.pageNumber;
+      if (params.pageSize !== undefined) queryParams.pageSize = params.pageSize;
+      if (params.customerId !== undefined) queryParams["customer-id"] = params.customerId;
+    }
+    const response = await api.get('/warranty-claims', { params: queryParams });
+    const payload = response.data?.data;
+    
+    // Convert from KebabCase to CamelCase
+    const mapClaimFromBackend = (item: any): WarrantyClaimResponse => ({
+      claimId: item["claim-id"],
+      claimNumber: item["claim-number"],
+      issueDescription: item["issue-description"],
+      claimStatus: item["claim-status"],
+      claimDate: item["claim-date"],
+      resolutionDate: item["resolution-date"],
+      resolutionNotes: item["resolution-notes"],
+      repairCost: item["repair-cost"] || 0,
+      createdAt: item["created-at"],
+      updatedAt: item["updated-at"],
+      status: item.status,
+      customerId: item["customer-id"],
+      processedByStaffId: item["processed-by-staff-id"],
+      orderDetailId: item["order-detail-id"]
+    });
+
+    return {
+      statusCode: response.data["status-code"] || response.data.statusCode,
+      message: response.data.message,
+      data: {
+        dataList: (payload?.["data-list"] || []).map(mapClaimFromBackend),
+        totalCount: payload?.["total-count"] || 0,
+        pageIndex: payload?.["page-index"] || params?.pageNumber || 1,
+        pageSize: payload?.["page-size"] || params?.pageSize || 10
+      }
+    };
+>>>>>>> Stashed changes
   },
 
   updateClaim: async (id: string, data: WarrantyClaimUpdateRequest) => {
