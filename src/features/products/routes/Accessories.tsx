@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Product, getProducts, getProductImage } from '@/features/admin/api/product-api';
+import { Product, getProducts } from '@/features/admin/api/product-api';
 import { Category, getCategories } from '@/features/admin/api/category-api';
 import { addToCart } from '@/lib/cart';
+import { resolveImageUrl } from '@/lib/image';
 import { useToast } from '@/providers/ToastProvider';
 
 const PAGE_SIZE = 9;
@@ -20,7 +21,6 @@ const Accessories: React.FC = () => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
-  const [imageMap, setImageMap] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const loadData = async () => {
@@ -39,30 +39,6 @@ const Accessories: React.FC = () => {
     };
     loadData();
   }, []);
-
-  useEffect(() => {
-    const loadImages = async () => {
-      const map: Record<string, string> = {};
-
-      await Promise.all(
-        products.map(async (p) => {
-          if (!p.imageUrl) return;
-
-          try {
-            const blob = await getProductImage(p.imageUrl);
-            const url = URL.createObjectURL(blob);
-            map[p.productId] = url;
-          } catch (err) {
-            console.error("Failed to load image", err);
-          }
-        })
-      );
-
-      setImageMap(map);
-    };
-
-    if (products.length) loadImages();
-  }, [products]);
 
   useEffect(() => { setPage(1); }, [selectedCategory, search, sort]);
 
@@ -255,18 +231,11 @@ const Accessories: React.FC = () => {
                       </span>
                     </div>
                     <div className="flex h-36 items-center justify-center">
-                      {imageMap[product.productId] ? (
                         <img
-                          src={imageMap[product.productId]}
+                          src={resolveImageUrl(product.imageUrl)}
                           alt={product.productName}
                           className="h-36 object-contain transition-transform duration-300 group-hover:scale-110"
                         />
-                      ) : (
-                        <span className="material-symbols-outlined text-[72px] text-white/18">
-                          image
-                        </span>
-                      )}
-
                     </div>
                     <div className="mt-8 flex items-center justify-between text-[10px] font-bold uppercase tracking-[0.18em] text-white/45">
                       <span>{product.sku}</span>

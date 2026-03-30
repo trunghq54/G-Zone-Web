@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Product, ProductRequest, createProductImage } from "../api/product-api";
 import { Category } from "../api/category-api";
+import { resolveImageUrl } from "@/lib/image";
 
 interface ProductModalProps {
   isOpen: boolean;
@@ -44,17 +45,6 @@ const ProductModal: React.FC<ProductModalProps> = ({
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  const getImageUrl = (path?: string) => {
-    if (!path) return null;
-
-    // if already blob (new upload)
-    if (path.startsWith("blob:")) return path;
-
-    // backend image endpoint
-    return `${import.meta.env.VITE_API_URL}/image/${path}`;
-  };
-
-
   useEffect(() => {
     if (initialData) {
       setFormData({
@@ -66,7 +56,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
         dimension: initialData.dimension || "",
         imageUrl: initialData.imageUrl || "",
       });
-      setPreviewUrl(getImageUrl(initialData.imageUrl) || null);
+      setPreviewUrl(initialData.imageUrl ? resolveImageUrl(initialData.imageUrl) : null);
       setImageFile(null);
     } else {
       setFormData({
@@ -253,7 +243,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
                 />
                 {formData.imageUrl && (
                   <div className="w-12 h-12 rounded overflow-hidden border border-surface-border shrink-0">
-                    <img src={formData.imageUrl} alt="Preview" className="w-full h-full object-cover" />
+                      <img src={resolveImageUrl(formData.imageUrl)} alt="Preview" className="w-full h-full object-cover" />
                   </div>
                 )}
               </div>
