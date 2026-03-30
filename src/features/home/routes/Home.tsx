@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import highPerformanceRedSportMotorcycle from "@/assets/high-performance-red-sport-motorcycle.png";
-import helmet from "@/assets/helmet.png";
-import jacket from "@/assets/jacket.png";
-import gloves from "@/assets/gloves.png";
+const highPerformanceRedSportMotorcycle = "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=500&h=300&fit=crop";
+const helmet = "https://images.unsplash.com/photo-1557008075-7f2c5efa4cfd?w=200&h=200&fit=crop";
+const jacket = "https://images.unsplash.com/photo-1520975661595-6453be3f7070?w=200&h=200&fit=crop";
+const gloves = "https://images.unsplash.com/photo-1588698188562-b1fd07c2c99a?w=200&h=200&fit=crop";
 import { Product, getProducts } from "@/features/admin/api/product-api";
 import { addToCart } from "@/lib/cart";
 import { useToast } from "@/providers/ToastProvider";

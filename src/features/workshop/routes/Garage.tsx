@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import GarageCard1 from '../../../assets/garage-card-1.png';
-import GarageCard2 from '../../../assets/garage-card-2.png';
+const GarageCard1 = "https://images.unsplash.com/photo-1590216719119-01c3bf7ec842?w=800&h=400&fit=crop";
+const GarageCard2 = "https://images.unsplash.com/photo-1627488099661-80a525f05a10?w=800&h=400&fit=crop";
 
 const Garage: React.FC = () => {
   return (
