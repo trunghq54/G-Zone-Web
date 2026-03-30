@@ -123,7 +123,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
         setLoading(false);
         return;
       }
-      let imagePath = initialData?.imageUrl || "";
+      let imagePath = formData.imageUrl || initialData?.imageUrl || "";
 
       // ✅ only upload if user picked new file
       if (imageFile) {
